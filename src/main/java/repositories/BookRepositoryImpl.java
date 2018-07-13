@@ -1,0 +1,209 @@
+package repositories;
+
+
+import entities.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class BookRepositoryImpl implements BookRepository {
+
+    //DBClassExample db = new DBClassExample();
+
+    @Override
+    public void creatBook(Book book) {
+
+    }
+
+    @Override
+    public boolean isBookAvailable(PaperBook book) {
+        for (int i=0; i< DBClassExample.booksInLibrary.size(); i++){
+            if (book.equals(DBClassExample.booksInLibrary.get(i))){
+                PaperBook paperBook = (PaperBook) DBClassExample.booksInLibrary.get(i);
+                return paperBook.getNumberOfCopiesAvailable() > 0;
+            }
+        }
+        throw new IllegalArgumentException("There is no such book.");
+    }
+
+    @Override
+    public void openEBook() {
+
+    }
+
+    @Override
+    public void downloadEBook() {
+
+    }
+
+    /*
+    @Override
+    public List<Book> findBookByAuthorFirstName(String firstName) {
+        List<Book> foundBooks = new ArrayList<>();
+        for (Book book: DBClassExample.booksInLibrary) {
+            for (Author author: book.getAuthors()) {
+                if(author.getFirstName().equalsIgnoreCase(firstName)){
+                    foundBooks.add(book);
+                }
+            }
+        }
+        return foundBooks;
+
+    }
+
+    @Override
+    public List<Book> findBookByAuthorLastName(String lastName) {
+        List<Book> foundBooks = new ArrayList<>();
+        for (Book book: DBClassExample.booksInLibrary) {
+            for (Author author: book.getAuthors()) {
+                if(author.getLastName().equalsIgnoreCase(lastName)){
+                    foundBooks.add(book);
+                }
+            }
+        }
+        return foundBooks;
+    }
+
+*/
+    @Override
+    public List<Book> findBookByTitle(String title) {
+        List<Book> foundBooks = new ArrayList<>();
+        for (Book book: DBClassExample.booksInLibrary) {
+            if(book.getTitle().equalsIgnoreCase(title)){
+                    foundBooks.add(book);
+            }
+        }
+        return foundBooks;
+    }
+
+    @Override
+    public List<Book> findBookByGenres(String... genres) {
+        List<Book> foundBooks = new ArrayList<>();
+        for (Book book: DBClassExample.booksInLibrary) {
+            for (String genre: genres) {
+                if (book.getGenre().equalsIgnoreCase(genre))
+                    foundBooks.add(book);
+            }
+        }
+        return foundBooks;
+    }
+
+    @Override
+    public List<Book> findBookByTags(String... tags) {
+        List<Book> foundBooks = new ArrayList<>();
+        for (Book book: DBClassExample.booksInLibrary) {
+            for (String tagBook : book.getTags()) {
+                for (String tagSearch : tags) {
+                    if (tagBook.equalsIgnoreCase(tagSearch))
+                        foundBooks.add(book);
+                }
+
+            }
+        }
+        return foundBooks;
+    }
+
+    @Override
+    public List<Book> findBookByAuthorName(String fullName) {
+        List<Book> foundBooks = new ArrayList<>();
+        for (Book book: DBClassExample.booksInLibrary) {
+            for (Author author: book.getAuthors()) {
+                String fullNameAuthor = author.getFirstName().toLowerCase() + " " + author.getLastName().toLowerCase();
+                String fullNameAuthorReverse = author.getLastName().toLowerCase() + " " + author.getFirstName().toLowerCase();
+                if(fullNameAuthor.contains(fullName) || fullNameAuthorReverse.contains(fullName)){
+                        foundBooks.add(book);
+                }
+            }
+        }
+        return foundBooks;
+    }
+
+    @Override
+    public boolean isTheBookFree() {
+        return false;
+    }
+
+    @Override
+    public void decAvailableCopies(PaperBook book) {
+            for (int i=0; i < DBClassExample.booksInLibrary.size(); i++){
+                if (book.equals(DBClassExample.booksInLibrary.get(i))) {
+                    PaperBook paperBookDB = (PaperBook) DBClassExample.booksInLibrary.get(i);
+                    int numberOfCopies = paperBookDB.getAllCopies() - 1;
+                    DBClassExample.booksInLibrary.remove(paperBookDB);
+                    paperBookDB.setAllCopies(numberOfCopies);
+                    DBClassExample.booksInLibrary.add(paperBookDB);
+                    break;
+                }
+            }
+    }
+
+    // TODO: vij kade go polzvash i napravi proverka za -1.
+    // TODO: izchisti si metoda - imash povtoreniq na koda.
+    @Override
+    public int createQueryForWaiting(PaperBook book, String username){
+        /*
+          TODO: proverqva dali ima quety za tazi kniga. Ako ima proverqva(po username) dali tozi user e podal veche zaqvka.
+          TODO: Ako e podal vrashta index-a mu ot list-a, a ako ne e do odbavq i otnovo vrashta index-a
+        */
+        if (DBClassExample.queue.isEmpty()){
+            // ako spisaka e prazen syzdavam go
+            for (int k=0; k< DBClassExample.users.size(); k++) {
+                User user = DBClassExample.users.get(k);
+                if (username.equals(user.getCredentials().getUsername())) {
+                    List<User> users = new ArrayList<>();
+                    users.add(user);
+                    QueueForBorrow queueForBorrow = new QueueForBorrow(users, book);
+                    DBClassExample.queue.add(queueForBorrow);
+                    return DBClassExample.queue.size();
+                }
+            }
+        } else {
+            for (int i = 0; i < DBClassExample.queue.size(); i++) {
+                // proverqvame dali knigata q ima v spisaka
+                if (book.equals(DBClassExample.queue.get(i).getBook())) {
+                    for (int j = 0; j < DBClassExample.queue.get(i).getWaitingUsers().size(); j++) {
+                        //proverqvame dali user-a e veche v lista na chakashti
+                        if (username.equals(DBClassExample.queue.get(i).getWaitingUsers().get(j).getCredentials().getUsername())) {
+                            return j;
+                        } else {
+                            for (int k = 0; i < DBClassExample.users.size(); k++) {
+                                User user = DBClassExample.users.get(k);
+                                // dobavqme user-a v lista na chakashti
+                                if (username.equals(user.getCredentials().getUsername())) {
+                                    DBClassExample.queue.get(i).getWaitingUsers().add(user);
+                                    return DBClassExample.queue.get(i).getWaitingUsers().size();
+                                }
+
+                            }
+                        }
+                    }
+                } else {
+                    //ako knigata q nqma q zapisvame s tozi user koito e napravil molbata
+                    for (int k = 0; k < DBClassExample.users.size(); k++) {
+                        User user = DBClassExample.users.get(k);
+                        if (username.equals(user.getCredentials().getUsername())) {
+                            List<User> users = new ArrayList<>();
+                            users.add(user);
+                            QueueForBorrow queueForBorrow = new QueueForBorrow(users, book);
+                            DBClassExample.queue.add(queueForBorrow);
+                            return DBClassExample.queue.size();
+                        }
+                    }
+                }
+            }
+        }
+        return -1;
+    }
+
+    @Override
+    public int bookAvailability(PaperBook book) {
+        for (int i=0; i< DBClassExample.queue.size(); i++){
+            if (book.equals(DBClassExample.queue.get(i).getBook())){
+                User userBorrowedBook = DBClassExample.queue.get(i).getWaitingUsers().get(0);
+                //TODO: dovarshi si kak shte vzima borrowed book datata i da pravi izchisleniqta.
+            }
+        }
+        return -1;
+    }
+
+}
