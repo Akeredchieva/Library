@@ -37,4 +37,12 @@ public class History {
     public void setBorrowedBooks(List<BorrowedBook> borrowedBooks) {
         this.borrowedBooks = borrowedBooks;
     }
+
+    public void addBorrowedBook(BorrowedBook borrowedBook){
+        borrowedBooks.add(borrowedBook);
+    }
+
+    public void addBookInHistory(HistoryEntry HistoryEntry){
+        historyOfBooks.add(HistoryEntry);
+    }
 }

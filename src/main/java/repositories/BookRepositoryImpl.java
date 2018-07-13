@@ -3,8 +3,14 @@ package repositories;
 
 import entities.*;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAmount;
 import java.util.ArrayList;
 import java.util.List;
+
+import static java.util.concurrent.TimeUnit.DAYS;
 
 public class BookRepositoryImpl implements BookRepository {
 
@@ -195,12 +201,24 @@ public class BookRepositoryImpl implements BookRepository {
         return -1;
     }
 
+
+// TODO: Proveri dali raboti korektno
     @Override
-    public int bookAvailability(PaperBook book) {
+    public long bookAvailability(PaperBook book) {
+        LocalDate theDateForTaking = LocalDate.now();
         for (int i=0; i< DBClassExample.queue.size(); i++){
             if (book.equals(DBClassExample.queue.get(i).getBook())){
                 User userBorrowedBook = DBClassExample.queue.get(i).getWaitingUsers().get(0);
-                //TODO: dovarshi si kak shte vzima borrowed book datata i da pravi izchisleniqta.
+                HistoryRepository historyRepository = new HistoryRepositoryImpl();
+                List<BorrowedBook> borrowedBooks = historyRepository.getBorrowedBooks(userBorrowedBook.getCredentials().getUsername());
+                for (int j=0; j< borrowedBooks.size(); j++){
+                   if(borrowedBooks.get(i).getBook().getTitle().equals(book.getTitle())){
+                       theDateForTaking =  borrowedBooks.get(i).getDateOfTaken();
+                       break;
+                   }
+                }
+                theDateForTaking = theDateForTaking.plusDays(DBClassExample.queue.get(i).getWaitingUsers().size()*28);
+                return LocalDate.now().until(theDateForTaking,ChronoUnit.DAYS);
             }
         }
         return -1;

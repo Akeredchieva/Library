@@ -22,7 +22,7 @@ public interface BookRepository {
 
    List<Book> findBookByTags(String... tags);
 
-   List<Book> findBookByAuthorFullName(String fullName);
+   public List<Book> findBookByAuthorName(String fullName) ;
 
    boolean isTheBookFree();
 
@@ -30,7 +30,7 @@ public interface BookRepository {
 
    int createQueryForWaiting(PaperBook book, String username);
 
-   int bookAvailability(PaperBook book);
+   long bookAvailability(PaperBook book);
 
 
 }
