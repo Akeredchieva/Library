@@ -4,7 +4,6 @@ import entities.User;
 
 public class UserRepositoryImpl implements UserRepository{
 
-    DBClassExample dbClassExample;
 
     @Override
     public User findUserByUsername(String username) {
@@ -13,8 +12,7 @@ public class UserRepositoryImpl implements UserRepository{
             String userDbName = userDB.getCredentials().getUsername();
 
             if ((username.equals(userDbName))){
-                User user = userDB;
-                return user;
+                return userDB;
             }
         }
         throw new IllegalArgumentException("The user can not be found in the DB");

@@ -5,12 +5,8 @@ import entities.*;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.Temporal;
-import java.time.temporal.TemporalAmount;
 import java.util.ArrayList;
 import java.util.List;
-
-import static java.util.concurrent.TimeUnit.DAYS;
 
 public class BookRepositoryImpl implements BookRepository {
 

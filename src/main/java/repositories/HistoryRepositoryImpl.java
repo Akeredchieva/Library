@@ -3,6 +3,7 @@ package repositories;
 import entities.*;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 public class HistoryRepositoryImpl implements HistoryRepository {
@@ -23,7 +24,6 @@ public class HistoryRepositoryImpl implements HistoryRepository {
 
         for (int i=0; i< DBClassExample.history.size(); i++){
               if(!DBClassExample.history.get(i).getHistoryOfBooks().contains(book)){
-
                   HistoryEntry historyEntry = new HistoryEntry(status,book,LocalDate.now());
                   DBClassExample.history.get(i).addBookInHistory(historyEntry);
               }
@@ -52,6 +52,32 @@ public class HistoryRepositoryImpl implements HistoryRepository {
         }
 
         return null;
+    }
+
+    @Override
+    public BorrowedBook findExactBook(Book book) {
+        for (int i = 0; i < DBClassExample.history.size(); i++) {
+            for (int j=0; j< DBClassExample.history.get(i).getBorrowedBooks().size(); j++) {
+                if (DBClassExample.history.get(i).getBorrowedBooks().get(j).getBook().equals(book)) {
+                    return DBClassExample.history.get(i).getBorrowedBooks().get(j);
+                }
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public void changeBorrowedBook(BorrowedBook borrowedBook, int daysOfPostponement) {
+        for (int i = 0; i < DBClassExample.history.size(); i++) {
+            for (int j = 0; j < DBClassExample.history.get(i).getBorrowedBooks().size(); j++) {
+                if (DBClassExample.history.get(i).getBorrowedBooks().get(j).getBook().equals(borrowedBook.getBook())) {
+                    if (DBClassExample.history.get(i).getBorrowedBooks().get(j).getDateOfTaken().until(LocalDate.now(),ChronoUnit.DAYS) <= (28 - daysOfPostponement)) {
+                        LocalDate newReturnDate = DBClassExample.history.get(i).getBorrowedBooks().get(j).getDateOfReturn().plusDays(daysOfPostponement);
+                        DBClassExample.history.get(i).getBorrowedBooks().get(j).setDateOfReturn(newReturnDate);
+                    }
+                }
+            }
+        }
     }
 
 }

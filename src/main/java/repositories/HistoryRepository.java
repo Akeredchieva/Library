@@ -18,4 +18,8 @@ public interface HistoryRepository {
 
     List<BorrowedBook> getBorrowedBooks(String username);
 
+    BorrowedBook findExactBook(Book book);
+
+    void changeBorrowedBook(BorrowedBook borrowedBook, int daysOfPostponement);
+
 }

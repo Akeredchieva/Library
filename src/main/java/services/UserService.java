@@ -10,21 +10,25 @@ import java.util.List;
 
 public class UserService {
     private BookRepository bookRepository = new BookRepositoryImpl();
-    private UserRepository userRepository = new UserRepositoryImpl();
     private HistoryRepository historyRepository = new HistoryRepositoryImpl();
-    BorrowingService borrowingService = new BorrowingService();
+    private BorrowingService borrowingService = new BorrowingService();
 
 
     // TODO: LocalDate checkExpirationDate();
 
-    // TODO: void makePostponement();
+    public void makePostponement(Book book, int daysOfPostponement){
+
+        BorrowedBook borrowedBook= historyRepository.findExactBook(book);
+        borrowingService.changeBorrowedBook(borrowedBook,daysOfPostponement);
+
+    }
 
     public String viewHistory(String username){
 
        List<HistoryEntry> history = historyRepository.getHistoryEntry(username);
        StringBuilder sb = new StringBuilder();
         for (HistoryEntry historyEntry : history) {
-            sb.append(historyEntry.toString() + "\n");
+            sb.append(historyEntry.toString()).append("\n");
         }
         return sb.toString();
     }
@@ -34,7 +38,7 @@ public class UserService {
         List<BorrowedBook> borrowedBooks = historyRepository.getBorrowedBooks(username);
         StringBuilder sb = new StringBuilder();
         for (BorrowedBook borrowedBook : borrowedBooks) {
-            sb.append(borrowedBook.toString() + "\n");
+            sb.append(borrowedBook.toString()).append("\n");
         }
         return sb.toString();
 
@@ -55,10 +59,14 @@ public class UserService {
                 numberInTheQueue = bookRepository.createQueryForWaiting((PaperBook) book, username);
                 daysTheBookAvailable = bookRepository.bookAvailability((PaperBook) book);
             }
+        } else {
+            throw new IllegalArgumentException("This book is not paper book so it could no be borrowed.");
         }
-        sb.append("You number in the query is " + numberInTheQueue +
-                ".\nAnd the book will be available after: " +
-                daysTheBookAvailable + "days." );
+        sb.append("You number in the query is ")
+                .append(numberInTheQueue)
+                .append(".\nAnd the book will be available after: ")
+                .append(daysTheBookAvailable)
+                .append(("days."));
 
     }
 }
