@@ -37,4 +37,11 @@ public class BorrowedBook {
     public void setDateOfTaken(LocalDate dateOfTaken) {
         this.dateOfTaken = dateOfTaken;
     }
+
+    @Override
+    public String toString() {
+        return  "book: " + book + "\n" +
+                "dateOfReturn: " + dateOfReturn + "\n" +
+                "dateOfTaken: " + dateOfTaken;
+    }
 }

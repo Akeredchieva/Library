@@ -26,7 +26,7 @@ public class SearchService {
     }
 
     List<Book> searchByAuthorFullName(String name){
-        return bookRepository.findBookByAuthorFullName(name);
+        return bookRepository.findBookByAuthorName(name);
     }
 
 }

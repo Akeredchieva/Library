@@ -1,6 +1,7 @@
 package services;
 
 import entities.Book;
+import entities.EBook;
 import entities.PaperBook;
 import repositories.BookRepository;
 import repositories.BookRepositoryImpl;
@@ -14,29 +15,34 @@ public class BorrowingService {
    // TODO: String msgForAttemptAnotherRequest();
    // TODO: int checkDelayDays();
 
-    public void requestForBorrowingBook(Book book, String username){
-        if (book instanceof PaperBook){
-           if(bookRepository.isBookAvailable((PaperBook) book)){
-               bookRepository.decAvailableCopies((PaperBook)book);
-               //TODO: trqbva da namalish kopiqta na knigata s edno.Ako nqma kopiq trqbva da idesh w opashkata i da dobavish
-               // TODO: user-a w opshakata za tazi kniga i da mu varnesh nomer
-           } else {
-               int numberInTheQueue = bookRepository.createQueryForWaiting((PaperBook) book, username);
-               int daysTheBookAvailable = bookRepository.bookAvailability((PaperBook) book);
-           }
-        }
-
+    void borrowBook(PaperBook book, String username){
+        bookRepository.setBookforBorrow(book, username);
     }
 
    // TODO: Date calcTimeTillTheBookWillBeFree();
 
-    public String openOnlineBook(){
-
-        return "";
+    public String openOnlineBook(Book book){
+        StringBuilder sb = new StringBuilder();
+        if (book instanceof EBook) {
+            sb.append("The link for online reading: "+ bookRepository.openOnlineBook((EBook) book));
+        } else {
+            throw new IllegalArgumentException("This book is not electronic.");
+        }
+        return sb.toString();
     }
 
     // TODO: downloadOnlineBook();
 
+    public String downloadOnlineBook(Book book){
 
+        StringBuilder sb = new StringBuilder();
+        if (book instanceof EBook) {
+            sb.append("The link for download: " + bookRepository.downloadEBook((EBook) book));
+        } else {
+            throw new IllegalArgumentException("This book is not electronic.");
+        }
+
+        return sb.toString();
+    }
 
 }

@@ -37,4 +37,11 @@ public class HistoryEntry {
     public void setDateOfReturn(LocalDate dateOfReturn) {
         this.dateOfReturn = dateOfReturn;
     }
+
+    @Override
+    public String toString() {
+        return  "book: " + book +
+                "status: " + status +
+                "dateOfReturn: " + dateOfReturn;
+    }
 }

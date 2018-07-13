@@ -1,6 +1,7 @@
 package repositories;
 
 import entities.Book;
+import entities.EBook;
 import entities.PaperBook;
 
 import java.util.List;
@@ -11,9 +12,7 @@ public interface BookRepository {
 
    boolean isBookAvailable(PaperBook book);
 
-   void openEBook();
-
-   void downloadEBook();
+   String downloadEBook(EBook eBook);
 
 
    List<Book> findBookByTitle(String title);
@@ -31,6 +30,10 @@ public interface BookRepository {
    int createQueryForWaiting(PaperBook book, String username);
 
    long bookAvailability(PaperBook book);
+
+   String openOnlineBook(EBook eBook);
+
+    public void setBookforBorrow(PaperBook book, String username);
 
 
 }

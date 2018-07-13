@@ -33,13 +33,18 @@ public class BookRepositoryImpl implements BookRepository {
     }
 
     @Override
-    public void openEBook() {
+    public String downloadEBook(EBook eBook) {
 
-    }
-
-    @Override
-    public void downloadEBook() {
-
+        for (int i=0; i< DBClassExample.booksInLibrary.size(); i++){
+            if (DBClassExample.booksInLibrary.get(i) instanceof EBook){
+                if (DBClassExample.booksInLibrary.get(i).getTitle().equals(eBook.getTitle())){
+                    if (DBClassExample.booksInLibrary.get(i).getAuthors().containsAll(eBook.getAuthors())){
+                        return ((EBook) DBClassExample.booksInLibrary.get(i)).getDownloadLink();
+                    }
+                }
+            }
+        }
+        return null;
     }
 
     /*
@@ -71,6 +76,8 @@ public class BookRepositoryImpl implements BookRepository {
     }
 
 */
+
+
     @Override
     public List<Book> findBookByTitle(String title) {
         List<Book> foundBooks = new ArrayList<>();
@@ -222,6 +229,36 @@ public class BookRepositoryImpl implements BookRepository {
             }
         }
         return -1;
+    }
+
+    @Override
+    public String openOnlineBook(EBook eBook) {
+        for (int i=0; i< DBClassExample.booksInLibrary.size() ; i++){
+            if (DBClassExample.booksInLibrary.get(i) instanceof EBook){
+                if (eBook.getTitle().equals(DBClassExample.booksInLibrary.get(i).getTitle())){
+                    if (eBook.getAuthors().containsAll(DBClassExample.booksInLibrary.get(i).getAuthors())){
+                        return ((EBook) DBClassExample.booksInLibrary.get(i)).getOnlineReadingLink();
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public void setBookforBorrow(PaperBook book, String username) {
+        for (int i=0; i< DBClassExample.history.size(); i++){
+            if (DBClassExample.history.get(i).getUser().getCredentials().getUsername().equals(username)){
+                    if (DBClassExample.history.get(i).getBorrowedBooks().contains(book)) {
+                        throw new IllegalArgumentException("You can not borrow book that you already borrowed.");
+                    } else {
+                        BorrowedBook borrowedBook = new BorrowedBook(book,LocalDate.now().plusDays(14),LocalDate.now());
+                        DBClassExample.history.get(i).getBorrowedBooks().add(borrowedBook);
+                    }
+
+            }
+
+        }
     }
 
 }
