@@ -222,7 +222,25 @@ public class UserServiceTest {
         UserService userService = new UserService();
         Book book2 = new PaperBook("BBB", "horror", "poiuytrew", tags, "mnbvcx", authorsSetPaperBook, 23, 0);
         //userService.requestForBorrowingBook(paperBook,user.getCredentials().getUsername());
-        assertEquals("The book is borrowed.", userService.requestForBorrowingBook(paperBook,user.getCredentials().getUsername()));
+        Credentials credentials = new Credentials("pkjh","fggbb");
+        Address address = new Address("[[[[[","Bulgaria","Smolqn");
+        PersonInfo personInfo = new PersonInfo("rrrr", "yyyyy",18, Sex.MALE, address);
+
+        user2 = new User(credentials, "grbfevd@abv.bg", true, personInfo);
+        String expected = "You number in the query is 4.\n" +
+                "And the book will be available after: 112days.";
+        assertEquals(expected, userService.requestForBorrowingBook(paperBook,user2.getCredentials().getUsername()));
+
+    }
+
+    @Test
+    public void requestForBorrowingBookFromUserWhichPresentingInTheList() {
+        UserService userService = new UserService();
+        Book book2 = new PaperBook("BBB", "horror", "poiuytrew", tags, "mnbvcx", authorsSetPaperBook, 23, 4);
+        //userService.requestForBorrowingBook(paperBook,user.getCredentials().getUsername());
+        expectedEx.expect(IllegalArgumentException.class);
+        expectedEx.expectMessage("You are presenting in the list of waiting.");
+        assertEquals(expectedEx, userService.requestForBorrowingBook(paperBook,user.getCredentials().getUsername()));
 
     }
 }

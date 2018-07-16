@@ -142,7 +142,7 @@ public class BookRepositoryImpl implements BookRepository {
                     users.add(user);
                     QueueForBorrow queueForBorrow = new QueueForBorrow(users, book);
                     this.queue.add(queueForBorrow);
-                    return this.queue.size();
+                    return this.queue.get(0).getWaitingUsers().size();
                 }
             }
         } else {
@@ -152,12 +152,12 @@ public class BookRepositoryImpl implements BookRepository {
                     for (int j = 0; j < this.queue.get(i).getWaitingUsers().size(); j++) {
                         //proverqvame dali user-a e veche v lista na chakashti
                         if (username.equals(this.queue.get(i).getWaitingUsers().get(j).getCredentials().getUsername())) {
-                            return j;
+                            throw new IllegalArgumentException("You are presenting in the list of waiting.");
                         } else {
-                            for (int k = 0; i < this.users.size(); k++) {
+                            for (int k = 0; k < this.users.size(); k++) {
                                 User user = this.users.get(k);
                                 // dobavqme user-a v lista na chakashti
-                                if (username.equals(user.getCredentials().getUsername())) {
+                                if (!username.equals(user.getCredentials().getUsername())) {
                                     this.queue.get(i).getWaitingUsers().add(user);
                                     return this.queue.get(i).getWaitingUsers().size();
                                 }
@@ -193,7 +193,7 @@ public class BookRepositoryImpl implements BookRepository {
                 User userBorrowedBook = this.queue.get(i).getWaitingUsers().get(0);
                 HistoryRepository historyRepository = new HistoryRepositoryImpl(history);
                 List<BorrowedBook> borrowedBooks = historyRepository.getBorrowedBooks(userBorrowedBook.getCredentials().getUsername());
-                for (int j=0; j< borrowedBooks.size(); j++){
+                for (int j=0; j< borrowedBooks.size()-1; j++){
                    if(borrowedBooks.get(i).getBook().getTitle().equals(book.getTitle())){
                        theDateForTaking =  borrowedBooks.get(i).getDateOfTaken();
                        break;
