@@ -2,6 +2,7 @@ package repositories;
 
 import entities.*;
 
+import java.awt.print.Paper;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -78,6 +79,20 @@ public class HistoryRepositoryImpl implements HistoryRepository {
                 }
             }
         }
+    }
+
+    @Override
+    public LocalDate getExpirationDate(Book book) {
+        if (book instanceof PaperBook){
+            for (int i = 0; i < DBClassExample.history.size(); i++) {
+                for (int j=0; j< DBClassExample.history.get(i).getBorrowedBooks().size(); j++){
+                    if (DBClassExample.history.get(i).getBorrowedBooks().get(j).getBook().equals(book)) {
+                        return DBClassExample.history.get(i).getBorrowedBooks().get(j).getDateOfReturn();
+                    }
+                }
+            }
+        }
+        return null;
     }
 
 }

@@ -6,6 +6,7 @@ import entities.HistoryEntry;
 import entities.PaperBook;
 import repositories.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public class UserService {
@@ -14,7 +15,9 @@ public class UserService {
     private BorrowingService borrowingService = new BorrowingService();
 
 
-    // TODO: LocalDate checkExpirationDate();
+    public LocalDate checkExpirationDate(Book book){
+       return historyRepository.getExpirationDate(book);
+    }
 
     public void makePostponement(Book book, int daysOfPostponement){
 

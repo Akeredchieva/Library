@@ -1,9 +1,6 @@
 package repositories;
 
-import entities.Book;
-import entities.BorrowedBook;
-import entities.HistoryEntry;
-import entities.Status;
+import entities.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -21,5 +18,7 @@ public interface HistoryRepository {
     BorrowedBook findExactBook(Book book);
 
     void changeBorrowedBook(BorrowedBook borrowedBook, int daysOfPostponement);
+
+    LocalDate getExpirationDate(Book book);
 
 }

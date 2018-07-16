@@ -1,8 +1,6 @@
 
-import entities.PaperBook;
 import services.AuthenticationService;
 import services.BorrowingService;
-import repositories.DBClassExample;
 import services.SearchService;
 import services.UserService;
 
