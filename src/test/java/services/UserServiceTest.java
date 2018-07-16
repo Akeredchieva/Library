@@ -189,20 +189,32 @@ public class UserServiceTest {
         }
     }
 
-    // TODO: Vij kakav trqbva da e expected - toest opravi si toString metodite!!!
+    // TODO: Opravi si testa - toq string e ujasen!!!
+    @Test
+    public void viewHistoryForUserWhoDoNotHave() {
+        UserService userService = new UserService();
+        expectedEx.expect(IllegalArgumentException.class);
+        expectedEx.expectMessage("This user does not have history.");
+        assertEquals(expectedEx, userService.viewHistory(user3.getCredentials().getUsername()));
+    }
+
     @Test
     public void viewHistory() {
         UserService userService = new UserService();
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < DBClassExample.history.size(); i++) {
-            if (DBClassExample.history.get(i).getUser().equals(user)){
-                for (int j = 0; j < DBClassExample.history.get(i).getHistoryOfBooks().size(); j++) {
-                    sb.append(DBClassExample.history.get(i).getHistoryOfBooks().get(j).toString());
-                }
-            }
-        }
+        String expected = "book: Book: title: AAAA\n" +
+                "genre: comedy\n" +
+                "summary: adsfsghjkhgfds\n" +
+                "tags: [aaaa, bbb, ccc]\n" +
+                "isbn: JGFBACSXDFGB\n" +
+                "authors: [entities.Author@50134894, entities.Author@5e8c92f4, entities.Author@61e4705b]\n" +
+                "EBook\n" +
+                "onlineReadingLink: www.sfgwr.com\n" +
+                "downloadLink: null\n" +
+                "\n" +
+                "status: READ\n" +
+                "dateOfReturn: 2018-05-02";
         String actualHistory = userService.viewHistory(user.getCredentials().getUsername());
-        assertEquals(sb.toString(),actualHistory);
+        assertEquals(expected,actualHistory);
     }
 
     @Test
@@ -212,7 +224,6 @@ public class UserServiceTest {
     @Test
     public void requestForBorrowingBookWhichHasCopies() {
         UserService userService = new UserService();
-        //userService.requestForBorrowingBook(paperBook,user.getCredentials().getUsername());
         assertEquals("The book is borrowed.", userService.requestForBorrowingBook(paperBook,user.getCredentials().getUsername()));
 
     }

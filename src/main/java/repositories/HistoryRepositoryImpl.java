@@ -66,6 +66,9 @@ public class HistoryRepositoryImpl implements HistoryRepository {
     public String getAllHistory(String username) {
         StringBuilder sb = new StringBuilder();
         List<HistoryEntry> result = this.getHistoryEntry(username);
+        if (result == null){
+            throw new IllegalArgumentException("This user does not have history.");
+        }
         for (HistoryEntry he : result) {
             sb.append(he.toString());
         }

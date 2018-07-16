@@ -40,8 +40,8 @@ public class HistoryEntry {
 
     @Override
     public String toString() {
-        return  "book: " + book +
-                "status: " + status +
+        return  "book: " + book + "\n" +
+                "status: " + status + "\n" +
                 "dateOfReturn: " + dateOfReturn;
     }
 }
