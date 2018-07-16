@@ -15,6 +15,8 @@ public interface HistoryRepository {
 
     List<BorrowedBook> getBorrowedBooks(String username);
 
+    String getAllHistory(String username);
+
     BorrowedBook findExactBook(User user, Book book);
 
     void changeReturnDate(Book bookInput, int daysOfPostponement, User user);

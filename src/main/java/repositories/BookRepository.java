@@ -1,10 +1,13 @@
 package repositories;
 
+import entities.Author;
 import entities.Book;
 import entities.EBook;
 import entities.PaperBook;
 
+
 import java.util.List;
+
 
 public interface BookRepository {
 

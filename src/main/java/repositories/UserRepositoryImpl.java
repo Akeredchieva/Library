@@ -1,14 +1,22 @@
 package repositories;
 
-import entities.User;
+import entities.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserRepositoryImpl implements UserRepository{
 
+    List<User> users = new ArrayList<>();
+
+    public UserRepositoryImpl(List<User> users) {
+        this.users = users;
+    }
 
     @Override
     public User findUserByUsername(String username) {
 
-        for (User userDB : DBClassExample.users) {
+        for (User userDB : this.users) {
             String userDbName = userDB.getCredentials().getUsername();
 
             if ((username.equals(userDbName))){
@@ -25,13 +33,13 @@ public class UserRepositoryImpl implements UserRepository{
             try {
                 this.findUserByUsername(user.getCredentials().getUsername());
             } catch(IllegalArgumentException noFoundUserEx) {
-                DBClassExample.users.add(user);
+                this.users.add(user);
             }
     }
 
     @Override
     public boolean getGdpr(String username) {
-        for (User userDB : DBClassExample.users) {
+        for (User userDB : this.users) {
             if (userDB.getCredentials().getUsername().equals(username)){
                 return userDB.getGdpr();
             }

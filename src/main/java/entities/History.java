@@ -45,4 +45,9 @@ public class History {
     public void addBookInHistory(HistoryEntry HistoryEntry){
         historyOfBooks.add(HistoryEntry);
     }
+
+    @Override
+    public String toString() {
+        return borrowedBooks.toString() + "\n" + historyOfBooks.toString();
+    }
 }

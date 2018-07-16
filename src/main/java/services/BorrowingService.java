@@ -10,8 +10,8 @@ import repositories.HistoryRepositoryImpl;
 //TODO: Promeni si imeto da e BookService - zashtoto vatre ti e i logikata za online kniga, koqto ne se borrow-va
 public class BorrowingService {
 
-    private BookRepository bookRepository = new BookRepositoryImpl();
-    private HistoryRepository historyRepository = new HistoryRepositoryImpl();
+    private BookRepository bookRepository = new BookRepositoryImpl(DBClassExample.booksInLibrary,DBClassExample.queue,DBClassExample.users,DBClassExample.history);
+    private HistoryRepository historyRepository = new HistoryRepositoryImpl(DBClassExample.history);
 
     // TODO: String msgForAttemptAnotherRequest();
    // TODO: int checkDelayDays();

@@ -3,21 +3,19 @@ package services;
 
 import entities.*;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import repositories.DBClassExample;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.regex.Pattern;
 
 import static org.junit.Assert.*;
 
+// TODO: Opravi si dannite v listovete.
 public class UserServiceTest {
 
     Book eBook;
@@ -36,6 +34,7 @@ public class UserServiceTest {
     @Before
     public void setUp(){
         db = new DBClassExample();
+
         tags = new ArrayList<>();
         tags.add("aaaa");
         tags.add("bbb");
@@ -96,6 +95,7 @@ public class UserServiceTest {
 
 
         DBClassExample.history.add(new History(user, historyOfBooks, borrowedBooks));
+
     }
 
     @Test
@@ -189,8 +189,20 @@ public class UserServiceTest {
         }
     }
 
+    // TODO: Vij kakav trqbva da e expected - toest opravi si toString metodite!!!
     @Test
     public void viewHistory() {
+        UserService userService = new UserService();
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < DBClassExample.history.size(); i++) {
+            if (DBClassExample.history.get(i).getUser().equals(user)){
+                for (int j = 0; j < DBClassExample.history.get(i).getHistoryOfBooks().size(); j++) {
+                    sb.append(DBClassExample.history.get(i).getHistoryOfBooks().get(j).toString());
+                }
+            }
+        }
+        String actualHistory = userService.viewHistory(user.getCredentials().getUsername());
+        assertEquals(sb.toString(),actualHistory);
     }
 
     @Test
@@ -198,6 +210,19 @@ public class UserServiceTest {
     }
 
     @Test
-    public void requestForBorrowingBook() {
+    public void requestForBorrowingBookWhichHasCopies() {
+        UserService userService = new UserService();
+        //userService.requestForBorrowingBook(paperBook,user.getCredentials().getUsername());
+        assertEquals("The book is borrowed.", userService.requestForBorrowingBook(paperBook,user.getCredentials().getUsername()));
+
+    }
+
+    @Test
+    public void requestForBorrowingBookWhichHasNotCopies() {
+        UserService userService = new UserService();
+        Book book2 = new PaperBook("BBB", "horror", "poiuytrew", tags, "mnbvcx", authorsSetPaperBook, 23, 0);
+        //userService.requestForBorrowingBook(paperBook,user.getCredentials().getUsername());
+        assertEquals("The book is borrowed.", userService.requestForBorrowingBook(paperBook,user.getCredentials().getUsername()));
+
     }
 }

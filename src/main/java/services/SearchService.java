@@ -8,7 +8,7 @@ import java.util.List;
 
 public class SearchService {
 
-    private BookRepository bookRepository = new BookRepositoryImpl();
+    private BookRepository bookRepository = new BookRepositoryImpl(DBClassExample.booksInLibrary, DBClassExample.queue, DBClassExample.users, DBClassExample.history);
 
     //TODO: opravi si metodite za imenata da sa generic - da priemat edin string da go parsva
     // TODO: chrez whitespace kato vzima parviq i posledniq substring
