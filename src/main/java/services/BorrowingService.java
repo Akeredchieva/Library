@@ -10,8 +10,14 @@ import repositories.HistoryRepositoryImpl;
 //TODO: Promeni si imeto da e BookService - zashtoto vatre ti e i logikata za online kniga, koqto ne se borrow-va
 public class BorrowingService {
 
-    private BookRepository bookRepository = new BookRepositoryImpl(DBClassExample.booksInLibrary,DBClassExample.queue,DBClassExample.users,DBClassExample.history);
-    private HistoryRepository historyRepository = new HistoryRepositoryImpl(DBClassExample.history);
+    DBClassExample db = new DBClassExample();
+    private BookRepository bookRepository = new BookRepositoryImpl();
+    private HistoryRepository historyRepository = new HistoryRepositoryImpl();
+
+    public BorrowingService(BookRepository bookRepository, HistoryRepository historyRepository) {
+        this.bookRepository = bookRepository;
+        this.historyRepository = historyRepository;
+    }
 
     // TODO: String msgForAttemptAnotherRequest();
    // TODO: int checkDelayDays();
@@ -20,8 +26,8 @@ public class BorrowingService {
         historyRepository.changeReturnDate(book, daysOfPostponement, user);
     }
 
-    void borrowBook(PaperBook book, String username){
-        bookRepository.setBookforBorrow(book, username);
+    void borrowBook(PaperBook book, User user){
+        bookRepository.setBookforBorrow(book, user.getCredentials().getUsername());
     }
 
    // TODO: Date calcTimeTillTheBookWillBeFree();

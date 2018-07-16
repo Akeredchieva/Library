@@ -7,9 +7,9 @@ import java.util.List;
 
 public interface HistoryRepository {
 
-    void addBookToBorrowed(String username, Book book, LocalDate dateOfTaken, LocalDate dateOfReturn);
+    void addBookToBorrowed(User user, Book bookInput);
 
-    void addBookToHistory(String username,Book book, Status status);
+    void addBookToHistory(User user,Book book, Status status);
 
     List<HistoryEntry> getHistoryEntry(String username);
 

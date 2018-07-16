@@ -6,7 +6,12 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import repositories.BookRepository;
+import repositories.BookRepositoryImpl;
+import repositories.HistoryRepository;
+import repositories.HistoryRepositoryImpl;
 
+import java.awt.print.Paper;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -18,22 +23,11 @@ import static org.junit.Assert.*;
 // TODO: Opravi si dannite v listovete.
 public class UserServiceTest {
 
-    Book eBook;
-    List<String> tags;
-    Set<Author> authorsSetEBook;
-    Book paperBook;
-    Set<Author> authorsSetPaperBook = new HashSet<>();
-    DBClassExample db;
-    List<User> users = new ArrayList<>();
-    User user;
-    User user2;
-    User user3;
     @Rule
     public ExpectedException expectedEx = ExpectedException.none();
-
+/*
     @Before
     public void setUp(){
-        db = new DBClassExample();
 
         tags = new ArrayList<>();
         tags.add("aaaa");
@@ -83,7 +77,7 @@ public class UserServiceTest {
         users.add(user3);
 
         QueueForBorrow waitingUsers = new QueueForBorrow(users, (PaperBook) paperBook);
-        DBClassExample.queue.add(waitingUsers);
+        db.queue.add(waitingUsers);
 
 
         List<HistoryEntry> historyOfBooks = new ArrayList<>();
@@ -94,51 +88,119 @@ public class UserServiceTest {
         //borrowedBooks.add(new BorrowedBook(eBook,LocalDate.of(2018,7, 12)));
 
 
-        DBClassExample.history.add(new History(user, historyOfBooks, borrowedBooks));
+        db.history.add(new History(user, historyOfBooks, borrowedBooks));
 
     }
-
+*/
     @Test
     public void checkExpirationDateForElectronicBook() {
+
+        BookRepository bookRepository = new BookRepositoryImpl();
+        HistoryRepository historyRepository = new HistoryRepositoryImpl();
+        BorrowingService borrowingService = new BorrowingService(bookRepository,historyRepository);
+        List<String> tags = new ArrayList<>();
+        tags.add("aaaa");
+        tags.add("bbb");
+        tags.add("ccc");
+        Set<Author> authorsSetEBook = new HashSet<>();
+        Author author = new Author("Alexander", " Duma", "Englannd", 1994, 2003);
+        authorsSetEBook.add(author);
+        Author author2 = new Author("Gosho ot pochivka", "", "BG", 1984);
+        authorsSetEBook.add(author2);
+        Author author3 = new Author("Annie", "GFDS", "BG", 1994);
+        authorsSetEBook.add(author3);
         expectedEx.expect(IllegalArgumentException.class);
         expectedEx.expectMessage("You can not see expiration date on electronic book.");
-        UserService userService = new UserService();
+        UserService userService = new UserService(bookRepository,historyRepository,borrowingService);
+        EBook eBook = new EBook("AAAA", "comedy", "adsfsghjkhgfds", tags, "JGFBACSXDFGB", authorsSetEBook, "www.sfgwr.com");
         userService.checkExpirationDate(eBook);
         assertEquals(expectedEx,userService.checkExpirationDate(eBook));
     }
 
     @Test
     public void checkExpirationDateForPaperBookWhichNotPresent(){
-        paperBook = new PaperBook("BBASB", "horror", "poiuytrew", tags, "mnbvcx", authorsSetPaperBook, 23, 14);
+        BookRepository bookRepository = new BookRepositoryImpl();
+        HistoryRepository historyRepository = new HistoryRepositoryImpl();
+        BorrowingService borrowingService = new BorrowingService(bookRepository,historyRepository);
+        List<String> tags = new ArrayList<>();
+        tags.add("aaaa");
+        tags.add("bbb");
+        tags.add("ccc");
+        Set<Author> authorsSetPaperBook = new HashSet<>();
+        Author author = new Author("Alexander", " Duma", "Englannd", 1994, 2003);
+        authorsSetPaperBook.add(author);
+        Author author2 = new Author("Gosho ot pochivka", "", "BG", 1984);
+        authorsSetPaperBook.add(author2);
+        Author author3 = new Author("Annie", "GFDS", "BG", 1994);
+        authorsSetPaperBook.add(author3);
+
+        PaperBook paperBook = new PaperBook("BBASB", "horror", "poiuytrew", tags, "mnbvcx", authorsSetPaperBook, 23, 14);
         expectedEx.expect(IllegalArgumentException.class);
         expectedEx.expectMessage("This book is not present in the history.");
-        UserService userService = new UserService();
+        UserService userService = new UserService(bookRepository,historyRepository,borrowingService);
         userService.checkExpirationDate(paperBook);
         assertEquals(expectedEx,userService.checkExpirationDate(paperBook));
     }
 
     @Test
     public void checkExpirationDateForPaperBookWhichPresent(){
-        UserService userService = new UserService();
-        userService.checkExpirationDate(paperBook);
-        assertEquals(LocalDate.of(2018,5, 2),userService.checkExpirationDate(paperBook));
+        BookRepository bookRepository = new BookRepositoryImpl();
+        HistoryRepository historyRepository = new HistoryRepositoryImpl();
+        BorrowingService borrowingService = new BorrowingService(bookRepository,historyRepository);
+        List<String> tags = new ArrayList<>();
+        tags.add("aaaa");
+        tags.add("bbb");
+        tags.add("ccc");
+        Set<Author> authorsSetPaperBook = new HashSet<>();
+        Author author = new Author("Alexander", " Duma", "Englannd", 1994, 2003);
+        authorsSetPaperBook.add(author);
+        Author author2 = new Author("Gosho ot pochivka", "", "BG", 1984);
+        authorsSetPaperBook.add(author2);
+        Author author3 = new Author("Annie", "GFDS", "BG", 1994);
+        authorsSetPaperBook.add(author3);
+        PaperBook paperBook = new PaperBook("BBB", "horror", "poiuytrew", tags, "mnbvcx", authorsSetPaperBook, 23, 14);
+        Credentials credentials = new Credentials("apk94", "123456789");
+        Address address = new Address("6-ti Septemvri", "Bulgaria", "Plovdiv");
+        PersonInfo personInfo = new PersonInfo("Ana", "Keredchieva", 24, Sex.FEMALE, address);
+
+        User user = new User(credentials, "annie.kere@gmail.com", true, personInfo);
+        historyRepository.addBookToBorrowed(user,paperBook);
+        UserService userService = new UserService(bookRepository,historyRepository,borrowingService);
+        assertEquals(LocalDate.now().plusDays(14),userService.checkExpirationDate(paperBook));
     }
 
     // Change the value of LocalDate on rows 94 and 95 with older date or add new Book with older date.
     @Test
     public void makePostponementForBookWithExpiredReturnDate() {
-        UserService userService = new UserService();
+        BookRepository bookRepository = new BookRepositoryImpl();
+        HistoryRepository historyRepository = new HistoryRepositoryImpl();
+        BorrowingService borrowingService = new BorrowingService(bookRepository,historyRepository);
+        List<String> tags = new ArrayList<>();
+        tags.add("aaaa");
+        tags.add("bbb");
+        tags.add("ccc");
+        Set<Author> authorsSetPaperBook = new HashSet<>();
+        Author author = new Author("Alexander", " Duma", "Englannd", 1994, 2003);
+        authorsSetPaperBook.add(author);
+        Author author2 = new Author("Gosho ot pochivka", "", "BG", 1984);
+        authorsSetPaperBook.add(author2);
+        Author author3 = new Author("Annie", "GFDS", "BG", 1994);
+        authorsSetPaperBook.add(author3);
+        PaperBook paperBook = new PaperBook("BBB", "horror", "poiuytrew", tags, "mnbvcx", authorsSetPaperBook, 23, 14);
+        Credentials credentials = new Credentials("apk94", "123456789");
+        Address address = new Address("6-ti Septemvri", "Bulgaria", "Plovdiv");
+        PersonInfo personInfo = new PersonInfo("Ana", "Keredchieva", 24, Sex.FEMALE, address);
 
-        LocalDate ld = LocalDate.now();
-        for (int i = 0; i < DBClassExample.history.size(); i++) {
-            if (DBClassExample.history.get(i).getUser().equals(user)){
-                for(int j=0; j< DBClassExample.history.get(i).getBorrowedBooks().size(); j++){
-                    if (DBClassExample.history.get(i).getBorrowedBooks().get(j).getBook().equals(paperBook)){
-                        ld = DBClassExample.history.get(i).getBorrowedBooks().get(j).getDateOfReturn();
-                    }
-                }
+        User user = new User(credentials, "annie.kere@gmail.com", true, personInfo);
+        historyRepository.addBookToBorrowed(user,paperBook);
+        for (int i=0; i<historyRepository.getBorrowedBooks(user.getCredentials().getUsername()).size(); i++) {
+            if (paperBook.equals(historyRepository.getBorrowedBooks(user.getCredentials().getUsername()).get(i).getBook())){
+                historyRepository.getBorrowedBooks(user.getCredentials().getUsername()).get(i).setDateOfReturn(LocalDate.of(2017,2,2));
             }
         }
+        UserService userService = new UserService(bookRepository,historyRepository,borrowingService);
+
+        LocalDate ld = LocalDate.now();
         try {
             userService.makePostponement(user, paperBook, 16);
         } catch(IllegalArgumentException iae) {
@@ -154,24 +216,65 @@ public class UserServiceTest {
     // Change the value of LocalDate on rows 94 and 95 with 2018-07-12 or add new Book with this date.
     @Test
     public void makePostponementWithCorrectDates() {
-        UserService userService = new UserService();
+        BookRepository bookRepository = new BookRepositoryImpl();
+        HistoryRepository historyRepository = new HistoryRepositoryImpl();
+        BorrowingService borrowingService = new BorrowingService(bookRepository,historyRepository);
+        List<String> tags = new ArrayList<>();
+        tags.add("aaaa");
+        tags.add("bbb");
+        tags.add("ccc");
+        Set<Author> authorsSetPaperBook = new HashSet<>();
+        Author author = new Author("Alexander", " Duma", "Englannd", 1994, 2003);
+        authorsSetPaperBook.add(author);
+        Author author2 = new Author("Gosho ot pochivka", "", "BG", 1984);
+        authorsSetPaperBook.add(author2);
+        Author author3 = new Author("Annie", "GFDS", "BG", 1994);
+        authorsSetPaperBook.add(author3);
+        PaperBook paperBook = new PaperBook("BBB", "horror", "poiuytrew", tags, "mnbvcx", authorsSetPaperBook, 23, 14);
+        Credentials credentials = new Credentials("apk94", "123456789");
+        Address address = new Address("6-ti Septemvri", "Bulgaria", "Plovdiv");
+        PersonInfo personInfo = new PersonInfo("Ana", "Keredchieva", 24, Sex.FEMALE, address);
+
+        User user = new User(credentials, "annie.kere@gmail.com", true, personInfo);
+        historyRepository.addBookToBorrowed(user,paperBook);
+
+        UserService userService = new UserService(bookRepository,historyRepository,borrowingService);
         userService.makePostponement(user, paperBook, 16);
+        historyRepository.addBookToBorrowed(user,paperBook);
         LocalDate ld = LocalDate.now();
-        for (int i = 0; i < DBClassExample.history.size(); i++) {
-            if (DBClassExample.history.get(i).getUser().equals(user)){
-                for(int j=0; j< DBClassExample.history.get(i).getBorrowedBooks().size(); j++){
-                    if (DBClassExample.history.get(i).getBorrowedBooks().get(j).getBook().equals(paperBook)){
-                        ld = DBClassExample.history.get(i).getBorrowedBooks().get(j).getDateOfReturn();
-                    }
-                }
+        for (int i=0; i<historyRepository.getBorrowedBooks(user.getCredentials().getUsername()).size(); i++) {
+            if (paperBook.equals(historyRepository.getBorrowedBooks(user.getCredentials().getUsername()).get(i).getBook())){
+               ld = historyRepository.getBorrowedBooks(user.getCredentials().getUsername()).get(i).getDateOfReturn();
             }
         }
-        assertEquals(LocalDate.of(2018,8,11),ld);
+        assertEquals(LocalDate.now().plusDays(14),ld);
     }
 
     @Test
     public void makePostponementWithTooManyDays() {
-        UserService userService = new UserService();
+        BookRepository bookRepository = new BookRepositoryImpl();
+        HistoryRepository historyRepository = new HistoryRepositoryImpl();
+        BorrowingService borrowingService = new BorrowingService(bookRepository,historyRepository);
+        List<String> tags = new ArrayList<>();
+        tags.add("aaaa");
+        tags.add("bbb");
+        tags.add("ccc");
+        Set<Author> authorsSetPaperBook = new HashSet<>();
+        Author author = new Author("Alexander", " Duma", "Englannd", 1994, 2003);
+        authorsSetPaperBook.add(author);
+        Author author2 = new Author("Gosho ot pochivka", "", "BG", 1984);
+        authorsSetPaperBook.add(author2);
+        Author author3 = new Author("Annie", "GFDS", "BG", 1994);
+        authorsSetPaperBook.add(author3);
+        PaperBook paperBook = new PaperBook("BBB", "horror", "poiuytrew", tags, "mnbvcx", authorsSetPaperBook, 23, 14);
+        Credentials credentials = new Credentials("apk94", "123456789");
+        Address address = new Address("6-ti Septemvri", "Bulgaria", "Plovdiv");
+        PersonInfo personInfo = new PersonInfo("Ana", "Keredchieva", 24, Sex.FEMALE, address);
+
+        User user = new User(credentials, "annie.kere@gmail.com", true, personInfo);
+        historyRepository.addBookToBorrowed(user,paperBook);
+
+        UserService userService = new UserService(bookRepository,historyRepository,borrowingService);
         try {
             userService.makePostponement(user, paperBook, 160);
         } catch (IllegalArgumentException iae) {
@@ -181,7 +284,32 @@ public class UserServiceTest {
 
     @Test
     public void makePostponementForEBook() {
-        UserService userService = new UserService();
+        BookRepository bookRepository = new BookRepositoryImpl();
+        HistoryRepository historyRepository = new HistoryRepositoryImpl();
+        BorrowingService borrowingService = new BorrowingService(bookRepository,historyRepository);
+        List<String> tags = new ArrayList<>();
+        tags.add("aaaa");
+        tags.add("bbb");
+        tags.add("ccc");
+        Set<Author> authorsSetPaperBook = new HashSet<>();
+        Author author = new Author("Alexander", " Duma", "Englannd", 1994, 2003);
+        authorsSetPaperBook.add(author);
+        Author author2 = new Author("Gosho ot pochivka", "", "BG", 1984);
+        authorsSetPaperBook.add(author2);
+        Author author3 = new Author("Annie", "GFDS", "BG", 1994);
+        authorsSetPaperBook.add(author3);
+        PaperBook paperBook = new PaperBook("BBB", "horror", "poiuytrew", tags, "mnbvcx", authorsSetPaperBook, 23, 14);
+        Credentials credentials = new Credentials("apk94", "123456789");
+        Address address = new Address("6-ti Septemvri", "Bulgaria", "Plovdiv");
+        PersonInfo personInfo = new PersonInfo("Ana", "Keredchieva", 24, Sex.FEMALE, address);
+
+        User user = new User(credentials, "annie.kere@gmail.com", true, personInfo);
+
+
+        UserService userService = new UserService(bookRepository,historyRepository,borrowingService);
+
+        EBook eBook = new EBook("AAAA", "comedy", "adsfsghjkhgfds", tags, "JGFBACSXDFGB", authorsSetPaperBook, "www.sfgwr.com");
+
         try {
             userService.makePostponement(user, eBook, 160);
         } catch (IllegalArgumentException iae) {
@@ -192,53 +320,163 @@ public class UserServiceTest {
     // TODO: Opravi si testa - toq string e ujasen!!!
     @Test
     public void viewHistoryForUserWhoDoNotHave() {
-        UserService userService = new UserService();
+        BookRepository bookRepository = new BookRepositoryImpl();
+        HistoryRepository historyRepository = new HistoryRepositoryImpl();
+        BorrowingService borrowingService = new BorrowingService(bookRepository,historyRepository);
+        List<String> tags = new ArrayList<>();
+        tags.add("aaaa");
+        tags.add("bbb");
+        tags.add("ccc");
+        Set<Author> authorsSetPaperBook = new HashSet<>();
+        Author author = new Author("Alexander", " Duma", "Englannd", 1994, 2003);
+        authorsSetPaperBook.add(author);
+        Author author2 = new Author("Gosho ot pochivka", "", "BG", 1984);
+        authorsSetPaperBook.add(author2);
+        Author author3 = new Author("Annie", "GFDS", "BG", 1994);
+        authorsSetPaperBook.add(author3);
+        PaperBook paperBook = new PaperBook("BBB", "horror", "poiuytrew", tags, "mnbvcx", authorsSetPaperBook, 23, 14);
+        Credentials credentials = new Credentials("apk94", "123456789");
+        Address address = new Address("6-ti Septemvri", "Bulgaria", "Plovdiv");
+        PersonInfo personInfo = new PersonInfo("Ana", "Keredchieva", 24, Sex.FEMALE, address);
+
+        User user = new User(credentials, "annie.kere@gmail.com", true, personInfo);
+
+        credentials = new Credentials("pppp","uuuu");
+        address = new Address("lkjhg","Romania","Timishioara");
+        personInfo = new PersonInfo("888888", "tttttt",20, Sex.MALE, address);
+
+        User user3 = new User(credentials, "dadada@abv.bg", true, personInfo);
+
+        UserService userService = new UserService(bookRepository,historyRepository,borrowingService);
+
         expectedEx.expect(IllegalArgumentException.class);
         expectedEx.expectMessage("This user does not have history.");
+
+
         assertEquals(expectedEx, userService.viewHistory(user3.getCredentials().getUsername()));
     }
 
     @Test
     public void viewHistory() {
-        UserService userService = new UserService();
-        String expected = "book: Book: title: AAAA\n" +
-                "genre: comedy\n" +
-                "summary: adsfsghjkhgfds\n" +
+
+        BookRepository bookRepository = new BookRepositoryImpl();
+        HistoryRepository historyRepository = new HistoryRepositoryImpl();
+        BorrowingService borrowingService = new BorrowingService(bookRepository,historyRepository);
+        List<String> tags = new ArrayList<>();
+        tags.add("aaaa");
+        tags.add("bbb");
+        tags.add("ccc");
+        Set<Author> authorsSetPaperBook = new HashSet<>();
+        Author author = new Author("Alexander", " Duma", "Englannd", 1994, 2003);
+        authorsSetPaperBook.add(author);
+        Author author2 = new Author("Gosho ot pochivka", "", "BG", 1984);
+        authorsSetPaperBook.add(author2);
+        Author author3 = new Author("Annie", "GFDS", "BG", 1994);
+        authorsSetPaperBook.add(author3);
+        PaperBook paperBook = new PaperBook("BBB", "horror", "poiuytrew", tags, "mnbvcx", authorsSetPaperBook, 23, 14);
+        Credentials credentials = new Credentials("apk94", "123456789");
+        Address address = new Address("6-ti Septemvri", "Bulgaria", "Plovdiv");
+        PersonInfo personInfo = new PersonInfo("Ana", "Keredchieva", 24, Sex.FEMALE, address);
+
+        User user = new User(credentials, "annie.kere@gmail.com", true, personInfo);
+
+        historyRepository.addBookToHistory(user,paperBook,Status.READ);
+        String expected = "book: Book: title: BBB\n" +
+                "genre: horror\n" +
+                "summary: poiuytrew\n" +
                 "tags: [aaaa, bbb, ccc]\n" +
-                "isbn: JGFBACSXDFGB\n" +
-                "authors: [entities.Author@50134894, entities.Author@5e8c92f4, entities.Author@61e4705b]\n" +
-                "EBook\n" +
-                "onlineReadingLink: www.sfgwr.com\n" +
-                "downloadLink: null\n" +
+                "isbn: mnbvcx\n" +
+                "authors: [Annie, GFDS, BG, 1994, 0\n" +
+                ", Gosho ot pochivka, , BG, 1984, 0\n" +
+                ", Alexander,  Duma, Englannd, 1994, 2003\n" +
+                "]\n" +
+                "PaperBook: \n" +
+                "numberOfCopiesAvailable: 14\n" +
+                "allCopies: 23\n" +
                 "\n" +
                 "status: READ\n" +
-                "dateOfReturn: 2018-05-02";
+                "dateOfReturn: 2018-07-16";
+        UserService userService = new UserService(bookRepository,historyRepository,borrowingService);
+
         String actualHistory = userService.viewHistory(user.getCredentials().getUsername());
         assertEquals(expected,actualHistory);
     }
 
     @Test
     public void viewBorrowedBooks() {
-        UserService userService = new UserService();
+
+        BookRepository bookRepository = new BookRepositoryImpl();
+        HistoryRepository historyRepository = new HistoryRepositoryImpl();
+        BorrowingService borrowingService = new BorrowingService(bookRepository,historyRepository);
+        List<String> tags = new ArrayList<>();
+        tags.add("aaaa");
+        tags.add("bbb");
+        tags.add("ccc");
+        Set<Author> authorsSetPaperBook = new HashSet<>();
+        Author author = new Author("Alexander", " Duma", "Englannd", 1994, 2003);
+        authorsSetPaperBook.add(author);
+        Author author2 = new Author("Gosho ot pochivka", "", "BG", 1984);
+        authorsSetPaperBook.add(author2);
+        Author author3 = new Author("Annie", "GFDS", "BG", 1994);
+        authorsSetPaperBook.add(author3);
+        PaperBook paperBook = new PaperBook("BBB", "horror", "poiuytrew", tags, "mnbvcx", authorsSetPaperBook, 23, 14);
+        Credentials credentials = new Credentials("apk94", "123456789");
+        Address address = new Address("6-ti Septemvri", "Bulgaria", "Plovdiv");
+        PersonInfo personInfo = new PersonInfo("Ana", "Keredchieva", 24, Sex.FEMALE, address);
+
+        User user = new User(credentials, "annie.kere@gmail.com", true, personInfo);
+
+        historyRepository.addBookToBorrowed(user,paperBook);
+        UserService userService = new UserService(bookRepository,historyRepository,borrowingService);
+
         String actualHistory = userService.viewBorrowedBooks(user.getCredentials().getUsername());
         String expected = "book: Book: title: BBB\n" +
                 "genre: horror\n" +
                 "summary: poiuytrew\n" +
                 "tags: [aaaa, bbb, ccc]\n" +
                 "isbn: mnbvcx\n" +
-                "authors: []\n" +
+                "authors: [Alexander,  Duma, Englannd, 1994, 2003\n" +
+                ", Gosho ot pochivka, , BG, 1984, 0\n" +
+                ", Annie, GFDS, BG, 1994, 0\n" +
+                "]\n" +
                 "PaperBook: \n" +
-                "numberOfCopiesAvailable: 0\n" +
+                "numberOfCopiesAvailable: 14\n" +
                 "allCopies: 23\n" +
                 "\n" +
-                "dateOfReturn: 2018-07-26\n" +
-                "dateOfTaken: 2018-07-12\n";
+                "dateOfReturn: 2018-07-30\n" +
+                "dateOfTaken: 2018-07-16\n";
         assertEquals(expected,actualHistory);
     }
 
     @Test
     public void viewBorrowedBooksOfUserWhoDoesNotBorrow() {
-        UserService userService = new UserService();
+        BookRepository bookRepository = new BookRepositoryImpl();
+        HistoryRepository historyRepository = new HistoryRepositoryImpl();
+        BorrowingService borrowingService = new BorrowingService(bookRepository,historyRepository);
+        List<String> tags = new ArrayList<>();
+        tags.add("aaaa");
+        tags.add("bbb");
+        tags.add("ccc");
+        Set<Author> authorsSetPaperBook = new HashSet<>();
+        Author author = new Author("Alexander", " Duma", "Englannd", 1994, 2003);
+        authorsSetPaperBook.add(author);
+        Author author2 = new Author("Gosho ot pochivka", "", "BG", 1984);
+        authorsSetPaperBook.add(author2);
+        Author author3 = new Author("Annie", "GFDS", "BG", 1994);
+        authorsSetPaperBook.add(author3);
+        PaperBook paperBook = new PaperBook("BBB", "horror", "poiuytrew", tags, "mnbvcx", authorsSetPaperBook, 23, 14);
+        Credentials credentials = new Credentials("apk94", "123456789");
+        Address address = new Address("6-ti Septemvri", "Bulgaria", "Plovdiv");
+        PersonInfo personInfo = new PersonInfo("Ana", "Keredchieva", 24, Sex.FEMALE, address);
+
+        User user = new User(credentials, "annie.kere@gmail.com", true, personInfo);
+        credentials = new Credentials("pppp","uuuu");
+        address = new Address("lkjhg","Romania","Timishioara");
+        personInfo = new PersonInfo("888888", "tttttt",20, Sex.MALE, address);
+
+        User user3 = new User(credentials, "dadada@abv.bg", true, personInfo);
+        UserService userService = new UserService(bookRepository,historyRepository,borrowingService);
+
         expectedEx.expect(IllegalArgumentException.class);
         expectedEx.expectMessage("The is no borrowed books.");
         assertEquals(expectedEx,userService.viewBorrowedBooks(user3.getCredentials().getUsername()));
@@ -246,30 +484,83 @@ public class UserServiceTest {
 
     @Test
     public void requestForBorrowingBookWhichHasCopies() {
-        UserService userService = new UserService();
-        assertEquals("The book is borrowed.", userService.requestForBorrowingBook(paperBook,user.getCredentials().getUsername()));
+        BookRepository bookRepository = new BookRepositoryImpl();
+        HistoryRepository historyRepository = new HistoryRepositoryImpl();
+        BorrowingService borrowingService = new BorrowingService(bookRepository,historyRepository);
+        List<String> tags = new ArrayList<>();
+        tags.add("aaaa");
+        tags.add("bbb");
+        tags.add("ccc");
+        Set<Author> authorsSetPaperBook = new HashSet<>();
+        Author author = new Author("Alexander", " Duma", "Englannd", 1994, 2003);
+        authorsSetPaperBook.add(author);
+        Author author2 = new Author("Gosho ot pochivka", "", "BG", 1984);
+        authorsSetPaperBook.add(author2);
+        Author author3 = new Author("Annie", "GFDS", "BG", 1994);
+        authorsSetPaperBook.add(author3);
+        PaperBook paperBook = new PaperBook("BBB", "horror", "poiuytrew", tags, "mnbvcx", authorsSetPaperBook, 23, 14);
+        Credentials credentials = new Credentials("apk94", "123456789");
+        Address address = new Address("6-ti Septemvri", "Bulgaria", "Plovdiv");
+        PersonInfo personInfo = new PersonInfo("Ana", "Keredchieva", 24, Sex.FEMALE, address);
+
+        User user = new User(credentials, "annie.kere@gmail.com", true, personInfo);
+        credentials = new Credentials("pppp","uuuu");
+        address = new Address("lkjhg","Romania","Timishioara");
+        personInfo = new PersonInfo("888888", "tttttt",20, Sex.MALE, address);
+
+        User user3 = new User(credentials, "dadada@abv.bg", true, personInfo);
+        UserService userService = new UserService(bookRepository,historyRepository,borrowingService);
+
+        bookRepository.creatBook(paperBook);
+
+        assertEquals("The book is borrowed.", userService.requestForBorrowingBook(paperBook,user));
 
     }
 
     @Test
-    public void requestForBorrowingBookWhichHasNotCopies() {
-        UserService userService = new UserService();
+    public void requestForBorrowingBookWhichHasNoCopies() {
+        BookRepository bookRepository = new BookRepositoryImpl();
+        HistoryRepository historyRepository = new HistoryRepositoryImpl();
+        BorrowingService borrowingService = new BorrowingService(bookRepository,historyRepository);
+        List<String> tags = new ArrayList<>();
+        tags.add("aaaa");
+        tags.add("bbb");
+        tags.add("ccc");
+        Set<Author> authorsSetPaperBook = new HashSet<>();
+        Author author = new Author("Alexander", " Duma", "Englannd", 1994, 2003);
+        authorsSetPaperBook.add(author);
+        Author author2 = new Author("Gosho ot pochivka", "", "BG", 1984);
+        authorsSetPaperBook.add(author2);
+        Author author3 = new Author("Annie", "GFDS", "BG", 1994);
+        authorsSetPaperBook.add(author3);
+        PaperBook paperBook = new PaperBook("BBB", "horror", "poiuytrew", tags, "mnbvcx", authorsSetPaperBook, 23, 14);
+
+        UserService userService = new UserService(bookRepository,historyRepository,borrowingService);
+
         Book book2 = new PaperBook("BBB", "horror", "poiuytrew", tags, "mnbvcx", authorsSetPaperBook, 23, 0);
         //userService.requestForBorrowingBook(paperBook,user.getCredentials().getUsername());
         Credentials credentials = new Credentials("pkjh","fggbb");
         Address address = new Address("[[[[[","Bulgaria","Smolqn");
         PersonInfo personInfo = new PersonInfo("rrrr", "yyyyy",18, Sex.MALE, address);
-
-        user2 = new User(credentials, "grbfevd@abv.bg", true, personInfo);
+        bookRepository.creatBook(book2);
+       User user2 = new User(credentials, "grbfevd@abv.bg", true, personInfo);
         String expected = "You number in the query is 4.\n" +
                 "And the book will be available after: 112days.";
-        assertEquals(expected, userService.requestForBorrowingBook(paperBook,user2.getCredentials().getUsername()));
+        Credentials credentials1 = new Credentials("apk94", "123456789");
+        Address address1 = new Address("6-ti Septemvri", "Bulgaria", "Plovdiv");
+        PersonInfo personInfo1 = new PersonInfo("Ana", "Keredchieva", 24, Sex.FEMALE, address);
+
+        User user = new User(credentials, "annie.kere@gmail.com", true, personInfo);
+        userService.requestForBorrowingBook(book2,user2);
+
+        assertEquals(expected,userService.requestForBorrowingBook(book2,user));
 
     }
-
+/*
     @Test
     public void requestForBorrowingBookFromUserWhichPresentingInTheList() {
         UserService userService = new UserService();
+        db = new DBClassExample();
         Book book2 = new PaperBook("BBB", "horror", "poiuytrew", tags, "mnbvcx", authorsSetPaperBook, 23, 4);
         //userService.requestForBorrowingBook(paperBook,user.getCredentials().getUsername());
         expectedEx.expect(IllegalArgumentException.class);
@@ -277,4 +568,5 @@ public class UserServiceTest {
         assertEquals(expectedEx, userService.requestForBorrowingBook(paperBook,user.getCredentials().getUsername()));
 
     }
+    */
 }

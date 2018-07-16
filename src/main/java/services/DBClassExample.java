@@ -10,10 +10,11 @@ import java.util.Set;
 
 // TODO: Ako imash vreme opravi go i go napravi na DAO Pattern ili razhvarli dannite po repository-tata.
 public  class DBClassExample {
-    public static List<Book> booksInLibrary = new ArrayList<>();
+    /*
+    public List<Book> booksInLibrary = new ArrayList<>();
     static List<User> users = new ArrayList<>();
-    public static List<QueueForBorrow> queue = new ArrayList<>();
-    public static List<History> history = new ArrayList<>();
+    public List<QueueForBorrow> queue = new ArrayList<>();
+    public List<History> history = new ArrayList<>();
 
     public DBClassExample() {
         Set<Author> authorsSet = new HashSet<>();
@@ -72,13 +73,13 @@ public  class DBClassExample {
 
         List<BorrowedBook> borrowedBooks = new ArrayList<>();
         //borrowedBooks.add(new BorrowedBook(book,LocalDate.of(2018,7, 12)));
-        borrowedBooks.add(new BorrowedBook((PaperBook)book2,LocalDate.of(2018,7, 12)));
+        borrowedBooks.add(new BorrowedBook((PaperBook)book2));
 
 
         history.add(new History(user, historyOfBooks, borrowedBooks));
 
     }
-
+*/
 
 
 

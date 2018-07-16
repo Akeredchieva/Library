@@ -62,4 +62,14 @@ public class Author {
     public void setDateOfDeath(int dateOfDeath) {
         this.dateOfDeath = dateOfDeath;
     }
+
+    @Override
+    public String toString() {
+        return  firstName +
+                ", " + lastName +
+                ", " + country +
+                ", " + dateOfBirth +
+                ", " + dateOfDeath +
+                '\n';
+    }
 }

@@ -58,4 +58,13 @@ public abstract class Book {
         return authors;
     }
 
+    public String getAllAuthorsByName(){
+        StringBuilder sb = new StringBuilder();
+        for (Author author: this.authors) {
+            sb.append(author.toString());
+        }
+        return sb.toString();
+    }
+
+
 }

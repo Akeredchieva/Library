@@ -8,10 +8,10 @@ public class BorrowedBook {
     private LocalDate dateOfReturn;
     private LocalDate dateOfTaken;
 
-    public BorrowedBook(PaperBook book, LocalDate dateOfTaken) {
+    public BorrowedBook(PaperBook book) {
         this.setBook(book);
+        this.setDateOfTaken(LocalDate.now());
         this.setDateOfReturn(dateOfTaken.plusDays(14));
-        this.setDateOfTaken(dateOfTaken);
     }
 
     public Book getBook() {

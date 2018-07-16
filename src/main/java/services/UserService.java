@@ -10,10 +10,16 @@ import java.util.List;
  * Service which create the functionality of the user. Here is the needed options which the user can make in it's profile.
  */
 public class UserService {
-    private BookRepository bookRepository = new BookRepositoryImpl(DBClassExample.booksInLibrary,DBClassExample.queue,DBClassExample.users,DBClassExample.history);
-    private HistoryRepository historyRepository = new HistoryRepositoryImpl(DBClassExample.history);
-    private BorrowingService borrowingService = new BorrowingService();
+    DBClassExample db = new DBClassExample();
+    private BookRepository bookRepository;
+    private HistoryRepository historyRepository;
+    private BorrowingService borrowingService;
 
+    public UserService(BookRepository bookRepository, HistoryRepository historyRepository, BorrowingService borrowingService) {
+        this.bookRepository = bookRepository;
+        this.historyRepository = historyRepository;
+        this.borrowingService = borrowingService;
+    }
 
     public LocalDate checkExpirationDate(Book book){
         if (book instanceof PaperBook) {
@@ -52,19 +58,19 @@ public class UserService {
 
     }
 
-    public String requestForBorrowingBook(Book book, String username){
+    public String requestForBorrowingBook(Book book, User user){
         StringBuilder sb = new StringBuilder();
         int numberInTheQueue = 0;
         long daysTheBookAvailable = 0;
         if (book instanceof PaperBook){
             if(bookRepository.isBookAvailable((PaperBook) book)){
                 bookRepository.decAvailableCopies((PaperBook)book);
-                borrowingService.borrowBook((PaperBook) book,username);
+                borrowingService.borrowBook((PaperBook) book,user);
                 //TODO: trqbva da namalish kopiqta na knigata s edno.Ako nqma kopiq trqbva da idesh w opashkata i da dobavish
                 // TODO: user-a w opshakata za tazi kniga i da mu varnesh nomer
                 sb.append("The book is borrowed.");
             } else {
-                numberInTheQueue = bookRepository.createQueryForWaiting((PaperBook) book, username);
+                numberInTheQueue = bookRepository.createQueryForWaiting((PaperBook) book, user);
                 daysTheBookAvailable = bookRepository.bookAvailability((PaperBook) book);
                 return sb.append("You number in the query is ")
                         .append(numberInTheQueue)

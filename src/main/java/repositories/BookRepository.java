@@ -1,9 +1,6 @@
 package repositories;
 
-import entities.Author;
-import entities.Book;
-import entities.EBook;
-import entities.PaperBook;
+import entities.*;
 
 
 import java.util.List;
@@ -30,7 +27,7 @@ public interface BookRepository {
 
    void decAvailableCopies(PaperBook book);
 
-   int createQueryForWaiting(PaperBook book, String username);
+   int createQueryForWaiting(PaperBook book, User user);
 
    long bookAvailability(PaperBook book);
 

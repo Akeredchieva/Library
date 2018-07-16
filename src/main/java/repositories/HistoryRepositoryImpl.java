@@ -1,6 +1,7 @@
 package repositories;
 
 import entities.*;
+import services.BorrowingService;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -9,21 +10,30 @@ import java.util.List;
 
 public class HistoryRepositoryImpl implements HistoryRepository {
 
-    List<History> history = new ArrayList<>();
+    List<History> history;
 
-    public HistoryRepositoryImpl(List<History> history) {
-        this.history = history;
+    public HistoryRepositoryImpl() {
+        this.history = new ArrayList<>();
     }
 
     @Override
-    public void addBookToBorrowed(String username, Book bookInput, LocalDate dateOfTaken, LocalDate dateOfReturn) {
+    public void addBookToBorrowed(User user, Book bookInput) {
 
         if (bookInput instanceof PaperBook) {
-            PaperBook book = (PaperBook) bookInput;
-            for (int i = 0; i < this.history.size(); i++) {
-                if (this.history.get(i).getUser().getCredentials().getUsername().equals(username)) {
-                    BorrowedBook borrowedBook = new BorrowedBook(book, dateOfTaken);
-                    this.history.get(i).addBorrowedBook(borrowedBook);
+            if (this.history.size() == 0){
+                List<HistoryEntry> historyEntries = new ArrayList<>();
+                List<BorrowedBook> borrowedBooks = new ArrayList<>();
+                BorrowedBook borrowedBook = new BorrowedBook((PaperBook) bookInput);
+                borrowedBooks.add(borrowedBook);
+                History history = new History(user, historyEntries,borrowedBooks);
+                this.history.add(history);
+            } else {
+                PaperBook book = (PaperBook) bookInput;
+                for (int i = 0; i < this.history.size(); i++) {
+                    if (this.history.get(i).getUser().getCredentials().getUsername().equals(user.getCredentials().getUsername())) {
+                        BorrowedBook borrowedBook = new BorrowedBook(book);
+                        this.history.get(i).addBorrowedBook(borrowedBook);
+                    }
                 }
             }
         } else {
@@ -33,14 +43,26 @@ public class HistoryRepositoryImpl implements HistoryRepository {
     }
 
     @Override
-    public void addBookToHistory(String username,Book book, Status status) {
+    public void addBookToHistory(User user,Book book, Status status) {
 
-        for (int i = 0; i< this.history.size(); i++){
-              if(!this.history.get(i).getHistoryOfBooks().contains(book)){
-                  HistoryEntry historyEntry = new HistoryEntry(status,book,LocalDate.now());
-                  this.history.get(i).addBookInHistory(historyEntry);
-              }
+        if (this.history.size() == 0){
+            HistoryEntry historyEntry = new HistoryEntry(status,book,LocalDate.now());
+            List<HistoryEntry> historyEntries = new ArrayList<>();
+            historyEntries.add(historyEntry);
+            List<Book> books = new ArrayList<>();
+            books.add(book);
+            List<BorrowedBook> borrowedBooks = new ArrayList<>();
+          //  borrowedBooks.add(new BorrowedBook(null));
+            History history = new History(user, historyEntries,null);
+            this.history.add(history);
+        } else {
+            for (int i = 0; i < this.history.size(); i++) {
+                if (!this.history.get(i).getHistoryOfBooks().contains(book)) {
+                    HistoryEntry historyEntry = new HistoryEntry(status, book, LocalDate.now());
+                    this.history.get(i).addBookInHistory(historyEntry);
+                }
 
+            }
         }
     }
 

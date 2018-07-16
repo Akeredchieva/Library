@@ -7,10 +7,10 @@ import java.util.List;
 
 public class UserRepositoryImpl implements UserRepository{
 
-    List<User> users = new ArrayList<>();
+    List<User> users;
 
-    public UserRepositoryImpl(List<User> users) {
-        this.users = users;
+    public UserRepositoryImpl() {
+        this.users = new ArrayList<>();
     }
 
     @Override

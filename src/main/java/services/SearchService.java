@@ -8,9 +8,13 @@ import java.util.List;
 
 public class SearchService {
 
-    private BookRepository bookRepository = new BookRepositoryImpl(DBClassExample.booksInLibrary, DBClassExample.queue, DBClassExample.users, DBClassExample.history);
+    DBClassExample db = new DBClassExample();
+    private BookRepository bookRepository = new BookRepositoryImpl();
 
-    //TODO: opravi si metodite za imenata da sa generic - da priemat edin string da go parsva
+    public SearchService(BookRepository bookRepository) {
+        this.bookRepository = bookRepository;
+    }
+//TODO: opravi si metodite za imenata da sa generic - da priemat edin string da go parsva
     // TODO: chrez whitespace kato vzima parviq i posledniq substring
 
     List<Book> searchByTitle(String title){
