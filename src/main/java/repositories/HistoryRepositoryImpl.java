@@ -69,6 +69,8 @@ public class HistoryRepositoryImpl implements HistoryRepository {
         return null;
     }
 
+    // TODO: Napravi si koda chetim!!!!
+    // TODO: Za ostavashti dni vazmojni za zaqvka ako iskash printvai si i kolko dni.
     @Override
     public void changeReturnDate(BorrowedBook borrowedBook, int daysOfPostponement) {
         for (int i = 0; i < DBClassExample.history.size(); i++) {
@@ -78,13 +80,17 @@ public class HistoryRepositoryImpl implements HistoryRepository {
                     if (days <= (28 - daysOfPostponement)) {
                         LocalDate newReturnDate = DBClassExample.history.get(i).getBorrowedBooks().get(j).getDateOfReturn().plusDays(daysOfPostponement);
                         DBClassExample.history.get(i).getBorrowedBooks().get(j).setDateOfReturn(newReturnDate);
+                    } else if((DBClassExample.history.get(i).getBorrowedBooks().get(j).getDateOfReturn().until(LocalDate.now()).getDays() >=0) && (DBClassExample.history.get(i).getBorrowedBooks().get(j).getDateOfReturn().until(LocalDate.now()).getMonths() >= 0) && (DBClassExample.history.get(i).getBorrowedBooks().get(j).getDateOfReturn().until(LocalDate.now()).getDays() >= 0 ) ){
+                        String message = "The return date is expired with "
+                                + DBClassExample.history.get(i).getBorrowedBooks().get(j).getDateOfReturn().until(LocalDate.now()).getDays()
+                                + " days.And "
+                                + DBClassExample.history.get(i).getBorrowedBooks().get(j).getDateOfReturn().until(LocalDate.now()).getMonths()
+                                + " months.Please return your book.";
+                        throw new IllegalArgumentException(message);
+                    } else if(days > (28 - daysOfPostponement)){
+                        String message = "You can not make so long postponement.";
+                        throw new IllegalArgumentException(message);
                     }
-                    String message = "The return date is expired with "
-                            + DBClassExample.history.get(i).getBorrowedBooks().get(j).getDateOfReturn().until(LocalDate.now()).getDays()
-                            + " days.And "
-                            + DBClassExample.history.get(i).getBorrowedBooks().get(j).getDateOfReturn().until(LocalDate.now()).getMonths()
-                            + " months.Please return your book.";
-                    throw new IllegalArgumentException(message);
                 }
             }
         }

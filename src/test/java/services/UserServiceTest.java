@@ -82,6 +82,20 @@ public class UserServiceTest {
         users.add(user);
         users.add(user2);
         users.add(user3);
+
+        QueueForBorrow waitingUsers = new QueueForBorrow(users, (PaperBook) paperBook);
+        DBClassExample.queue.add(waitingUsers);
+
+
+        List<HistoryEntry> historyOfBooks = new ArrayList<>();
+        historyOfBooks.add(new HistoryEntry(Status.READ, paperBook,LocalDate.of(2018, 5, 2)));
+
+        List<BorrowedBook> borrowedBooks = new ArrayList<>();
+        borrowedBooks.add(new BorrowedBook(paperBook,LocalDate.of(2018,7, 12)));
+        borrowedBooks.add(new BorrowedBook(eBook,LocalDate.of(2018,7, 12)));
+
+
+        DBClassExample.history.add(new History(user, historyOfBooks, borrowedBooks));
     }
 
     @Test
@@ -110,6 +124,7 @@ public class UserServiceTest {
         assertEquals(LocalDate.of(2018,5, 2),userService.checkExpirationDate(paperBook));
     }
 
+    // Change the value of LocalDate on rows 94 and 95 with older date or add new Book with older date.
     @Test
     public void makePostponementForBookWithExpiredReturnDate() {
         UserService userService = new UserService();
@@ -134,6 +149,34 @@ public class UserServiceTest {
                     iae.getMessage());
         }
 
+    }
+
+    // Change the value of LocalDate on rows 94 and 95 with 2018-07-12 or add new Book with this date.
+    @Test
+    public void makePostponementWithCorrectDates() {
+        UserService userService = new UserService();
+        userService.makePostponement(user, paperBook, 16);
+        LocalDate ld = LocalDate.now();
+        for (int i = 0; i < DBClassExample.history.size(); i++) {
+            if (DBClassExample.history.get(i).getUser().equals(user)){
+                for(int j=0; j< DBClassExample.history.get(i).getBorrowedBooks().size(); j++){
+                    if (DBClassExample.history.get(i).getBorrowedBooks().get(j).getBook().equals(paperBook)){
+                        ld = DBClassExample.history.get(i).getBorrowedBooks().get(j).getDateOfReturn();
+                    }
+                }
+            }
+        }
+        assertEquals(LocalDate.of(2018,8,11),ld);
+    }
+
+    @Test
+    public void makePostponementWithTooManyDays() {
+        UserService userService = new UserService();
+        try {
+            userService.makePostponement(user, paperBook, 160);
+        } catch (IllegalArgumentException iae) {
+            assertEquals("You can not make so long postponement.",iae.getMessage());
+        }
     }
 
     @Test
