@@ -90,8 +90,8 @@ public class UserServiceTest {
         historyOfBooks.add(new HistoryEntry(Status.READ, paperBook,LocalDate.of(2018, 5, 2)));
 
         List<BorrowedBook> borrowedBooks = new ArrayList<>();
-        borrowedBooks.add(new BorrowedBook(paperBook,LocalDate.of(2018,7, 12)));
-        borrowedBooks.add(new BorrowedBook(eBook,LocalDate.of(2018,7, 12)));
+        borrowedBooks.add(new BorrowedBook((PaperBook) paperBook,LocalDate.of(2018,7, 12)));
+        //borrowedBooks.add(new BorrowedBook(eBook,LocalDate.of(2018,7, 12)));
 
 
         DBClassExample.history.add(new History(user, historyOfBooks, borrowedBooks));
@@ -219,6 +219,29 @@ public class UserServiceTest {
 
     @Test
     public void viewBorrowedBooks() {
+        UserService userService = new UserService();
+        String actualHistory = userService.viewBorrowedBooks(user.getCredentials().getUsername());
+        String expected = "book: Book: title: BBB\n" +
+                "genre: horror\n" +
+                "summary: poiuytrew\n" +
+                "tags: [aaaa, bbb, ccc]\n" +
+                "isbn: mnbvcx\n" +
+                "authors: []\n" +
+                "PaperBook: \n" +
+                "numberOfCopiesAvailable: 0\n" +
+                "allCopies: 23\n" +
+                "\n" +
+                "dateOfReturn: 2018-07-26\n" +
+                "dateOfTaken: 2018-07-12\n";
+        assertEquals(expected,actualHistory);
+    }
+
+    @Test
+    public void viewBorrowedBooksOfUserWhoDoesNotBorrow() {
+        UserService userService = new UserService();
+        expectedEx.expect(IllegalArgumentException.class);
+        expectedEx.expectMessage("The is no borrowed books.");
+        assertEquals(expectedEx,userService.viewBorrowedBooks(user3.getCredentials().getUsername()));
     }
 
     @Test

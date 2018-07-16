@@ -16,13 +16,18 @@ public class HistoryRepositoryImpl implements HistoryRepository {
     }
 
     @Override
-    public void addBookToBorrowed(String username, Book book, LocalDate dateOfTaken, LocalDate dateOfReturn) {
+    public void addBookToBorrowed(String username, Book bookInput, LocalDate dateOfTaken, LocalDate dateOfReturn) {
 
-        for (int i = 0; i < this.history.size(); i++){
-            if (this.history.get(i).getUser().getCredentials().getUsername().equals(username)){
-                BorrowedBook borrowedBook= new BorrowedBook(book,dateOfTaken);
-                this.history.get(i).addBorrowedBook(borrowedBook);
+        if (bookInput instanceof PaperBook) {
+            PaperBook book = (PaperBook) bookInput;
+            for (int i = 0; i < this.history.size(); i++) {
+                if (this.history.get(i).getUser().getCredentials().getUsername().equals(username)) {
+                    BorrowedBook borrowedBook = new BorrowedBook(book, dateOfTaken);
+                    this.history.get(i).addBorrowedBook(borrowedBook);
+                }
             }
+        } else {
+            throw new IllegalArgumentException("You can not borrow e-book.");
         }
 
     }

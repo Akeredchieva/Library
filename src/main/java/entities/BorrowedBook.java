@@ -4,11 +4,11 @@ import java.time.LocalDate;
 
 public class BorrowedBook {
 
-    private Book book;
+    private PaperBook book;
     private LocalDate dateOfReturn;
     private LocalDate dateOfTaken;
 
-    public BorrowedBook(Book book, LocalDate dateOfTaken) {
+    public BorrowedBook(PaperBook book, LocalDate dateOfTaken) {
         this.setBook(book);
         this.setDateOfReturn(dateOfTaken.plusDays(14));
         this.setDateOfTaken(dateOfTaken);
@@ -18,7 +18,7 @@ public class BorrowedBook {
         return book;
     }
 
-    public void setBook(Book book) {
+    public void setBook(PaperBook book) {
         this.book = book;
     }
 

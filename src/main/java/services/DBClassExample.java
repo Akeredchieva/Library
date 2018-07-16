@@ -71,8 +71,8 @@ public  class DBClassExample {
         historyOfBooks.add(new HistoryEntry(Status.READ, book,LocalDate.of(2018, 5, 2)));
 
         List<BorrowedBook> borrowedBooks = new ArrayList<>();
-        borrowedBooks.add(new BorrowedBook(book,LocalDate.of(2018,7, 12)));
-        borrowedBooks.add(new BorrowedBook(book2,LocalDate.of(2018,7, 12)));
+        //borrowedBooks.add(new BorrowedBook(book,LocalDate.of(2018,7, 12)));
+        borrowedBooks.add(new BorrowedBook((PaperBook)book2,LocalDate.of(2018,7, 12)));
 
 
         history.add(new History(user, historyOfBooks, borrowedBooks));

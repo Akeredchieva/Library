@@ -42,6 +42,9 @@ public class UserService {
     public String viewBorrowedBooks(String username){
         List<BorrowedBook> borrowedBooks = historyRepository.getBorrowedBooks(username);
         StringBuilder sb = new StringBuilder();
+        if (borrowedBooks == null){
+            throw new IllegalArgumentException("The is no borrowed books.");
+        }
         for (BorrowedBook borrowedBook : borrowedBooks) {
             sb.append(borrowedBook.toString()).append("\n");
         }
