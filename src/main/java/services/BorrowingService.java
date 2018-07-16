@@ -20,7 +20,7 @@ public class BorrowingService {
    // TODO: int checkDelayDays();
 
     void changeBorrowedBook(BorrowedBook borrowedBook, int daysOfPostponement){
-        historyRepository.changeBorrowedBook(borrowedBook, daysOfPostponement);
+        historyRepository.changeReturnDate(borrowedBook, daysOfPostponement);
     }
 
     void borrowBook(PaperBook book, String username){

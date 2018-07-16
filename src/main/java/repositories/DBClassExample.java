@@ -9,10 +9,10 @@ import java.util.List;
 import java.util.Set;
 
 public  class DBClassExample {
-    static List<Book> booksInLibrary = new ArrayList<>();
+    public static List<Book> booksInLibrary = new ArrayList<>();
     static List<User> users = new ArrayList<>();
     static List<QueueForBorrow> queue = new ArrayList<>();
-    static List<History> history = new ArrayList<>();
+    public static List<History> history = new ArrayList<>();
 
     public DBClassExample() {
         Set<Author> authorsSet = new HashSet<>();
@@ -66,7 +66,9 @@ public  class DBClassExample {
         historyOfBooks.add(new HistoryEntry(Status.READ, book,LocalDate.of(2018, 5, 2)));
 
         List<BorrowedBook> borrowedBooks = new ArrayList<>();
-        borrowedBooks.add(new BorrowedBook(book,LocalDate.of(2018,5, 2),LocalDate.of(2018,5, 2)));
+        borrowedBooks.add(new BorrowedBook(book,LocalDate.of(2018,6, 2)));
+        borrowedBooks.add(new BorrowedBook(book2,LocalDate.of(2018,6, 2)));
+
 
         history.add(new History(user, historyOfBooks, borrowedBooks));
 

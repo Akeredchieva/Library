@@ -13,7 +13,7 @@ public class HistoryRepositoryImpl implements HistoryRepository {
 
         for (int i=0; i < DBClassExample.history.size(); i++){
             if (DBClassExample.history.get(i).getUser().getCredentials().getUsername().equals(username)){
-                BorrowedBook borrowedBook= new BorrowedBook(book,dateOfReturn,dateOfTaken);
+                BorrowedBook borrowedBook= new BorrowedBook(book,dateOfTaken);
                 DBClassExample.history.get(i).addBorrowedBook(borrowedBook);
             }
         }
@@ -56,11 +56,13 @@ public class HistoryRepositoryImpl implements HistoryRepository {
     }
 
     @Override
-    public BorrowedBook findExactBook(Book book) {
+    public BorrowedBook findExactBook(User user, Book book) {
         for (int i = 0; i < DBClassExample.history.size(); i++) {
-            for (int j=0; j< DBClassExample.history.get(i).getBorrowedBooks().size(); j++) {
-                if (DBClassExample.history.get(i).getBorrowedBooks().get(j).getBook().equals(book)) {
-                    return DBClassExample.history.get(i).getBorrowedBooks().get(j);
+            if (DBClassExample.history.get(i).getUser().equals(user)) {
+                for (int j = 0; j < DBClassExample.history.get(i).getBorrowedBooks().size(); j++) {
+                    if (DBClassExample.history.get(i).getBorrowedBooks().get(j).getBook().equals(book)) {
+                        return DBClassExample.history.get(i).getBorrowedBooks().get(j);
+                    }
                 }
             }
         }
@@ -68,14 +70,21 @@ public class HistoryRepositoryImpl implements HistoryRepository {
     }
 
     @Override
-    public void changeBorrowedBook(BorrowedBook borrowedBook, int daysOfPostponement) {
+    public void changeReturnDate(BorrowedBook borrowedBook, int daysOfPostponement) {
         for (int i = 0; i < DBClassExample.history.size(); i++) {
             for (int j = 0; j < DBClassExample.history.get(i).getBorrowedBooks().size(); j++) {
                 if (DBClassExample.history.get(i).getBorrowedBooks().get(j).getBook().equals(borrowedBook.getBook())) {
-                    if (DBClassExample.history.get(i).getBorrowedBooks().get(j).getDateOfTaken().until(LocalDate.now(),ChronoUnit.DAYS) <= (28 - daysOfPostponement)) {
+                    long days = DBClassExample.history.get(i).getBorrowedBooks().get(j).getDateOfTaken().until(LocalDate.now(),ChronoUnit.DAYS);
+                    if (days <= (28 - daysOfPostponement)) {
                         LocalDate newReturnDate = DBClassExample.history.get(i).getBorrowedBooks().get(j).getDateOfReturn().plusDays(daysOfPostponement);
                         DBClassExample.history.get(i).getBorrowedBooks().get(j).setDateOfReturn(newReturnDate);
                     }
+                    String message = "The return date is expired with "
+                            + DBClassExample.history.get(i).getBorrowedBooks().get(j).getDateOfReturn().until(LocalDate.now()).getDays()
+                            + " days.And "
+                            + DBClassExample.history.get(i).getBorrowedBooks().get(j).getDateOfReturn().until(LocalDate.now()).getMonths()
+                            + " months.Please return your book.";
+                    throw new IllegalArgumentException(message);
                 }
             }
         }

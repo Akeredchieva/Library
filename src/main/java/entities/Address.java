@@ -1,5 +1,8 @@
 package entities;
 
+/**
+ * Class which contains the address of the user - it's country, city and street.
+ */
 public class Address {
 
     private String street;

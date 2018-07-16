@@ -45,4 +45,14 @@ public class User {
     private void setPersonInfo(PersonInfo personInfo) {
         this.personInfo = personInfo;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof User){
+            User user = (User) obj;
+            return (user.getCredentials().getUsername().equals(this.getCredentials().getUsername())
+                    && user.getCredentials().getPassword().equals(this.getCredentials().getPassword()));
+        }
+        return false;
+    }
 }

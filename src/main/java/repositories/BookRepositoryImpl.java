@@ -248,7 +248,7 @@ public class BookRepositoryImpl implements BookRepository {
                     if (DBClassExample.history.get(i).getBorrowedBooks().contains(book)) {
                         throw new IllegalArgumentException("You can not borrow book that you already borrowed.");
                     } else {
-                        BorrowedBook borrowedBook = new BorrowedBook(book,LocalDate.now().plusDays(14),LocalDate.now());
+                        BorrowedBook borrowedBook = new BorrowedBook(book,LocalDate.now());
                         DBClassExample.history.get(i).getBorrowedBooks().add(borrowedBook);
                     }
 

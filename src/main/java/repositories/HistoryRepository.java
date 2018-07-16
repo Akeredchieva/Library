@@ -15,9 +15,9 @@ public interface HistoryRepository {
 
     List<BorrowedBook> getBorrowedBooks(String username);
 
-    BorrowedBook findExactBook(Book book);
+    BorrowedBook findExactBook(User user, Book book);
 
-    void changeBorrowedBook(BorrowedBook borrowedBook, int daysOfPostponement);
+    void changeReturnDate(BorrowedBook borrowedBook, int daysOfPostponement);
 
     LocalDate getExpirationDate(Book book);
 
