@@ -72,27 +72,34 @@ public class HistoryRepositoryImpl implements HistoryRepository {
     // TODO: Napravi si koda chetim!!!!
     // TODO: Za ostavashti dni vazmojni za zaqvka ako iskash printvai si i kolko dni.
     @Override
-    public void changeReturnDate(BorrowedBook borrowedBook, int daysOfPostponement) {
-        for (int i = 0; i < DBClassExample.history.size(); i++) {
-            for (int j = 0; j < DBClassExample.history.get(i).getBorrowedBooks().size(); j++) {
-                if (DBClassExample.history.get(i).getBorrowedBooks().get(j).getBook().equals(borrowedBook.getBook())) {
-                    long days = DBClassExample.history.get(i).getBorrowedBooks().get(j).getDateOfTaken().until(LocalDate.now(),ChronoUnit.DAYS);
-                    if (days <= (28 - daysOfPostponement)) {
-                        LocalDate newReturnDate = DBClassExample.history.get(i).getBorrowedBooks().get(j).getDateOfReturn().plusDays(daysOfPostponement);
-                        DBClassExample.history.get(i).getBorrowedBooks().get(j).setDateOfReturn(newReturnDate);
-                    } else if((DBClassExample.history.get(i).getBorrowedBooks().get(j).getDateOfReturn().until(LocalDate.now()).getDays() >=0) && (DBClassExample.history.get(i).getBorrowedBooks().get(j).getDateOfReturn().until(LocalDate.now()).getMonths() >= 0) && (DBClassExample.history.get(i).getBorrowedBooks().get(j).getDateOfReturn().until(LocalDate.now()).getDays() >= 0 ) ){
-                        String message = "The return date is expired with "
-                                + DBClassExample.history.get(i).getBorrowedBooks().get(j).getDateOfReturn().until(LocalDate.now()).getDays()
-                                + " days.And "
-                                + DBClassExample.history.get(i).getBorrowedBooks().get(j).getDateOfReturn().until(LocalDate.now()).getMonths()
-                                + " months.Please return your book.";
-                        throw new IllegalArgumentException(message);
-                    } else if(days > (28 - daysOfPostponement)){
-                        String message = "You can not make so long postponement.";
-                        throw new IllegalArgumentException(message);
+    public void changeReturnDate(Book bookInput, int daysOfPostponement, User user) {
+        if (bookInput instanceof PaperBook) {
+            PaperBook book = (PaperBook) bookInput;
+            for (int i = 0; i < DBClassExample.history.size(); i++) {
+                if (DBClassExample.history.get(i).getUser().equals(user)) {
+                    for (int j = 0; j < DBClassExample.history.get(i).getBorrowedBooks().size(); j++) {
+                        if (DBClassExample.history.get(i).getBorrowedBooks().get(j).getBook().equals(book)) {
+                            long days = DBClassExample.history.get(i).getBorrowedBooks().get(j).getDateOfTaken().until(LocalDate.now(), ChronoUnit.DAYS);
+                            if (days <= (28 - daysOfPostponement)) {
+                                LocalDate newReturnDate = DBClassExample.history.get(i).getBorrowedBooks().get(j).getDateOfReturn().plusDays(daysOfPostponement);
+                                DBClassExample.history.get(i).getBorrowedBooks().get(j).setDateOfReturn(newReturnDate);
+                            } else if ((DBClassExample.history.get(i).getBorrowedBooks().get(j).getDateOfReturn().until(LocalDate.now()).getDays() >= 0) && (DBClassExample.history.get(i).getBorrowedBooks().get(j).getDateOfReturn().until(LocalDate.now()).getMonths() >= 0) && (DBClassExample.history.get(i).getBorrowedBooks().get(j).getDateOfReturn().until(LocalDate.now()).getDays() >= 0)) {
+                                String message = "The return date is expired with "
+                                        + DBClassExample.history.get(i).getBorrowedBooks().get(j).getDateOfReturn().until(LocalDate.now()).getDays()
+                                        + " days.And "
+                                        + DBClassExample.history.get(i).getBorrowedBooks().get(j).getDateOfReturn().until(LocalDate.now()).getMonths()
+                                        + " months.Please return your book.";
+                                throw new IllegalArgumentException(message);
+                            } else if (days > (28 - daysOfPostponement)) {
+                                String message = "You can not make so long postponement.";
+                                throw new IllegalArgumentException(message);
+                            }
+                        }
                     }
                 }
             }
+        } else {
+            throw new IllegalArgumentException("This book can not be postponement, because it is E-Book.");
         }
     }
 

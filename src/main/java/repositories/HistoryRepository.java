@@ -17,7 +17,7 @@ public interface HistoryRepository {
 
     BorrowedBook findExactBook(User user, Book book);
 
-    void changeReturnDate(BorrowedBook borrowedBook, int daysOfPostponement);
+    void changeReturnDate(Book bookInput, int daysOfPostponement, User user);
 
     LocalDate getExpirationDate(Book book);
 

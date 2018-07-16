@@ -180,6 +180,16 @@ public class UserServiceTest {
     }
 
     @Test
+    public void makePostponementForEBook() {
+        UserService userService = new UserService();
+        try {
+            userService.makePostponement(user, eBook, 160);
+        } catch (IllegalArgumentException iae) {
+            assertEquals("This book can not be postponement, because it is E-Book.",iae.getMessage());
+        }
+    }
+
+    @Test
     public void viewHistory() {
     }
 

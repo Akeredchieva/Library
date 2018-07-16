@@ -26,10 +26,9 @@ public class UserService {
         throw new IllegalArgumentException("You can not see expiration date on electronic book.");
     }
 
+    // TODO: Vij zashto tarsish borrowed book i izprashtash borrowed book ? Ne moje li prosto da pratish dadenata kato input book?
     public void makePostponement(User user, Book book, int daysOfPostponement){
-
-        BorrowedBook borrowedBook= historyRepository.findExactBook(user, book);
-        borrowingService.changeBorrowedBook(borrowedBook,daysOfPostponement);
+        borrowingService.changeBorrowedBook(book,daysOfPostponement, user);
 
     }
 

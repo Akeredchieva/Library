@@ -1,9 +1,6 @@
 package services;
 
-import entities.Book;
-import entities.BorrowedBook;
-import entities.EBook;
-import entities.PaperBook;
+import entities.*;
 import repositories.BookRepository;
 import repositories.BookRepositoryImpl;
 import repositories.HistoryRepository;
@@ -19,8 +16,8 @@ public class BorrowingService {
     // TODO: String msgForAttemptAnotherRequest();
    // TODO: int checkDelayDays();
 
-    void changeBorrowedBook(BorrowedBook borrowedBook, int daysOfPostponement){
-        historyRepository.changeReturnDate(borrowedBook, daysOfPostponement);
+    void changeBorrowedBook(Book book, int daysOfPostponement, User user){
+        historyRepository.changeReturnDate(book, daysOfPostponement, user);
     }
 
     void borrowBook(PaperBook book, String username){
