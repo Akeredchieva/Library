@@ -181,7 +181,7 @@ public class BookRepositoryImpl implements BookRepository {
     }
 
 
-// TODO: Proveri dali raboti korektno
+// TODO: Proveri dali raboti korektno - ne raboti pravilno na posledniq if - borrowedBook e null !!! Trqbva da izvikva metoda za rezervirane na kniga!!! Ne sa ti navarzani metodite!!!
     @Override
     public long bookAvailability(PaperBook book) {
         LocalDate theDateForTaking = LocalDate.now();
