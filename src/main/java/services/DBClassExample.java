@@ -35,7 +35,7 @@ public  class DBClassExample {
         tags.add("bbb");
         tags.add("ccc");
 
-        Book book = new EBook("AAAA", "comedy", "adsfsghjkhgfds", tags, "JGFBACSXDFGB", authorsSet, "www.sfgwr.com");
+        Book book = new EBook("AAAA", "comedy", "adsfsghjkhgfds", tags, "JGFBACSXDFGB", authorsSet, "www.sfgwr.com", "www.sfgwr.com");
         Book book2 = new PaperBook("BBB", "horror", "poiuytrew", tags, "mnbvcx", authorsSet2, 23, 0);
 
 

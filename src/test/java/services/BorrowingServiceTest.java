@@ -224,6 +224,98 @@ public class BorrowingServiceTest {
     }
 
     @Test
+    public void openPaperBook() {
+
+        Credentials credentials = new Credentials("apk94", "123456789");
+        Address address = new Address("6-ti Septemvri", "Bulgaria", "Plovdiv");
+        PersonInfo personInfo = new PersonInfo("Ana", "Keredchieva", 24, Sex.FEMALE, address);
+        List<String> tags = new ArrayList<>();
+        tags.add("aaaa");
+        tags.add("bbb");
+        tags.add("ccc");
+
+        Set<Author> authorsSetEBook = new HashSet<>();
+
+        Author author3 = new Author("Annie", "GFDS", "BG", 1994);
+        authorsSetEBook.add(author3);
+        Author author2 = new Author("Gosho ot pochivka", "", "BG", 1984);
+        authorsSetEBook.add(author2);
+        Author author = new Author("Alexander", " Duma", "Englannd", 1994, 2003);
+        authorsSetEBook.add(author);
+
+
+        User user = new User(credentials, "annie.kere@gmail.com", true, personInfo);
+        Book eBook = new EBook("AAAA", "comedy", "adsfsghjkhgfds", tags, "JGFBACSXDFGB", authorsSetEBook, "www.sfgwr.com","www.sfgwr.com");
+
+        Book paperBook = new PaperBook("BBB", "horror", "poiuytrew", tags, "mnbvcx", authorsSetEBook, 23, 14);
+
+        BorrowingService borrowingService = new BorrowingService();
+        expectedEx.expect(IllegalArgumentException.class);
+        expectedEx.expectMessage("This book is not electronic.");
+
+
+
+        assertEquals(expectedEx,borrowingService.downloadOnlineBook(paperBook));
+    }
+    @Test
     public void downloadOnlineBook() {
+
+        Credentials credentials = new Credentials("apk94", "123456789");
+        Address address = new Address("6-ti Septemvri", "Bulgaria", "Plovdiv");
+        PersonInfo personInfo = new PersonInfo("Ana", "Keredchieva", 24, Sex.FEMALE, address);
+        List<String> tags = new ArrayList<>();
+        tags.add("aaaa");
+        tags.add("bbb");
+        tags.add("ccc");
+
+        Set<Author> authorsSetEBook = new HashSet<>();
+
+        Author author3 = new Author("Annie", "GFDS", "BG", 1994);
+        authorsSetEBook.add(author3);
+        Author author2 = new Author("Gosho ot pochivka", "", "BG", 1984);
+        authorsSetEBook.add(author2);
+        Author author = new Author("Alexander", " Duma", "Englannd", 1994, 2003);
+        authorsSetEBook.add(author);
+
+
+        User user = new User(credentials, "annie.kere@gmail.com", true, personInfo);
+        Book eBook = new EBook("AAAA", "comedy", "adsfsghjkhgfds", tags, "JGFBACSXDFGB", authorsSetEBook, "www.sfgwr.com","www.sfgwr.com");
+
+        BorrowingService borrowingService = new BorrowingService();
+
+
+        assertEquals("The link for download: www.sfgwr.com",borrowingService.downloadOnlineBook(eBook));
+    }
+
+    @Test
+    public void downloadPaperBook() {
+
+        Credentials credentials = new Credentials("apk94", "123456789");
+        Address address = new Address("6-ti Septemvri", "Bulgaria", "Plovdiv");
+        PersonInfo personInfo = new PersonInfo("Ana", "Keredchieva", 24, Sex.FEMALE, address);
+        List<String> tags = new ArrayList<>();
+        tags.add("aaaa");
+        tags.add("bbb");
+        tags.add("ccc");
+
+        Set<Author> authorsSetEBook = new HashSet<>();
+
+        Author author3 = new Author("Annie", "GFDS", "BG", 1994);
+        authorsSetEBook.add(author3);
+        Author author2 = new Author("Gosho ot pochivka", "", "BG", 1984);
+        authorsSetEBook.add(author2);
+        Author author = new Author("Alexander", " Duma", "Englannd", 1994, 2003);
+        authorsSetEBook.add(author);
+
+
+        User user = new User(credentials, "annie.kere@gmail.com", true, personInfo);
+        Book eBook = new EBook("AAAA", "comedy", "adsfsghjkhgfds", tags, "JGFBACSXDFGB", authorsSetEBook, "www.sfgwr.com","www.sfgwr.com");
+        Book paperBook = new PaperBook("BBB", "horror", "poiuytrew", tags, "mnbvcx", authorsSetEBook, 23, 14);
+
+        BorrowingService borrowingService = new BorrowingService();
+        expectedEx.expect(IllegalArgumentException.class);
+        expectedEx.expectMessage("This book is not electronic.");
+
+        assertEquals(expectedEx,borrowingService.downloadOnlineBook(paperBook));
     }
 }

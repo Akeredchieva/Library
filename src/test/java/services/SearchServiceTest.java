@@ -143,7 +143,7 @@ public class SearchServiceTest {
                 "authors: [Author{firstName='Annie', lastName='GFDS', country='BG', dateOfBirth=1994, dateOfDeath=0}, Author{firstName='Gosho', lastName='ot pochivka', country='BG', dateOfBirth=1984, dateOfDeath=0}, Author{firstName='Alexander', lastName=' Duma', country='Englannd', dateOfBirth=1994, dateOfDeath=2003}]\n" +
                 "EBook\n" +
                 "onlineReadingLink: www.sfgwr.com\n" +
-                "downloadLink: null\n" +
+                "downloadLink: www.sfgwr.com\n" +
                 "]";
         assertEquals(expected,searchService.searchByAuthorFullName("Gosho ot pochivka").toString());
 
@@ -166,7 +166,7 @@ public class SearchServiceTest {
     }
 
     @Test
-    public void searchByAuthorNameWhichFirstName() {
+    public void searchByAuthorFirstName() {
         SearchService searchService = new SearchService();
         String expected = "[Book: title: AAAA\n" +
                 "genre: comedy\n" +
@@ -182,7 +182,7 @@ public class SearchServiceTest {
     }
 
     @Test
-    public void searchByAuthorNameWhichLastName() {
+    public void searchByAuthorLastName() {
         SearchService searchService = new SearchService();
         String expected = "[Book: title: AAAA\n" +
                 "genre: comedy\n" +

@@ -43,8 +43,6 @@ public class BorrowingService {
         return sb.toString();
     }
 
-    // TODO: downloadOnlineBook();
-
     public String downloadOnlineBook(Book book){
 
         StringBuilder sb = new StringBuilder();

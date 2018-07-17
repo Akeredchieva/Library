@@ -38,20 +38,6 @@ public class BookRepositoryImpl implements BookRepository {
         throw new IllegalArgumentException("There is no such book.");
     }
 
-    @Override
-    public String downloadEBook(EBook eBook) {
-
-        for (int i=0; i< booksInLibrary.size(); i++){
-            if (booksInLibrary.get(i) instanceof EBook){
-                if (booksInLibrary.get(i).getTitle().equals(eBook.getTitle())){
-                    if (booksInLibrary.get(i).getAuthors().containsAll(eBook.getAuthors())){
-                        return ((EBook) booksInLibrary.get(i)).getDownloadLink();
-                    }
-                }
-            }
-        }
-        return null;
-    }
 
     @Override
     public List<Book> findBookByTitle(String title) {
@@ -216,6 +202,18 @@ public class BookRepositoryImpl implements BookRepository {
         return null;
     }
 
+    @Override
+    public String downloadEBook(EBook eBook) {
+
+        for (int i=0; i< booksInLibrary.size(); i++){
+            if (booksInLibrary.get(i) instanceof EBook){
+                if (booksInLibrary.get(i).getTitle().equals(eBook.getTitle())){
+                        return ((EBook) booksInLibrary.get(i)).getDownloadLink();
+                }
+            }
+        }
+        return null;
+    }
     @Override
     public void setBookforBorrow(PaperBook book, String username) {
         for (int i = 0; i< this.history.size(); i++){
