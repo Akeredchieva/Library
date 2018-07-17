@@ -1,8 +1,6 @@
 package services;
 
 import entities.Author;
-import entities.Book;
-import entities.EBook;
 import entities.PaperBook;
 import org.junit.Rule;
 import org.junit.Test;
@@ -116,7 +114,7 @@ public class SearchServiceTest {
                 "summary: adsfsghjkhgfds\n" +
                 "tags: [aaaa, bbb, ccc]\n" +
                 "isbn: JGFBACSXDFGB\n" +
-                "authors: [Author{firstName='Gosho', lastName='ot pochivka', country='BG', dateOfBirth=1984, dateOfDeath=0}, Author{firstName='Alexander', lastName=' Duma', country='Englannd', dateOfBirth=1994, dateOfDeath=2003}, Author{firstName='Annie', lastName='GFDS', country='BG', dateOfBirth=1994, dateOfDeath=0}]\n" +
+                "authors: [Author{firstName='Annie', lastName='GFDS', country='BG', dateOfBirth=1994, dateOfDeath=0}, Author{firstName='Gosho', lastName='ot pochivka', country='BG', dateOfBirth=1984, dateOfDeath=0}, Author{firstName='Alexander', lastName=' Duma', country='Englannd', dateOfBirth=1994, dateOfDeath=2003}]\n" +
                 "EBook\n" +
                 "onlineReadingLink: www.sfgwr.com\n" +
                 "downloadLink: null\n" +
@@ -142,7 +140,7 @@ public class SearchServiceTest {
                 "summary: adsfsghjkhgfds\n" +
                 "tags: [aaaa, bbb, ccc]\n" +
                 "isbn: JGFBACSXDFGB\n" +
-                "authors: [Author{firstName='Gosho', lastName='ot pochivka', country='BG', dateOfBirth=1984, dateOfDeath=0}, Author{firstName='Alexander', lastName=' Duma', country='Englannd', dateOfBirth=1994, dateOfDeath=2003}, Author{firstName='Annie', lastName='GFDS', country='BG', dateOfBirth=1994, dateOfDeath=0}]\n" +
+                "authors: [Author{firstName='Annie', lastName='GFDS', country='BG', dateOfBirth=1994, dateOfDeath=0}, Author{firstName='Gosho', lastName='ot pochivka', country='BG', dateOfBirth=1984, dateOfDeath=0}, Author{firstName='Alexander', lastName=' Duma', country='Englannd', dateOfBirth=1994, dateOfDeath=2003}]\n" +
                 "EBook\n" +
                 "onlineReadingLink: www.sfgwr.com\n" +
                 "downloadLink: null\n" +
@@ -191,7 +189,16 @@ public class SearchServiceTest {
                 "summary: adsfsghjkhgfds\n" +
                 "tags: [aaaa, bbb, ccc]\n" +
                 "isbn: JGFBACSXDFGB\n" +
-                "authors: [Author{firstName='Annie', lastName='GFDS', country='BG', dateOfBirth=1994, dateOfDeath=0}, Author{firstName='Gosho', lastName='ot pochivka', country='BG', dateOfBirth=1984, dateOfDeath=0}, Author{firstName='Alexander', lastName=' Duma', country='Englannd', dateOfBirth=1994, dateOfDeath=2003}]\n" +
+                "authors: [Author{firstName='Gosho', lastName='ot pochivka', country='BG', dateOfBirth=1984, dateOfDeath=0}, Author{firstName='Alexander', lastName=' Duma', country='Englannd', dateOfBirth=1994, dateOfDeath=2003}, Author{firstName='Annie', lastName='GFDS', country='BG', dateOfBirth=1994, dateOfDeath=0}]\n" +
+                "EBook\n" +
+                "onlineReadingLink: www.sfgwr.com\n" +
+                "downloadLink: null\n" +
+                ", Book: title: AAAA\n" +
+                "genre: comedy\n" +
+                "summary: adsfsghjkhgfds\n" +
+                "tags: [aaaa, bbb, ccc]\n" +
+                "isbn: JGFBACSXDFGB\n" +
+                "authors: [Author{firstName='Annie', lastName='GFDS', country='BG', dateOfBirth=1994, dateOfDeath=0}, Author{firstName='Alexander', lastName=' Duma', country='Englannd', dateOfBirth=1994, dateOfDeath=2003}, Author{firstName='Gosho', lastName='ot pochivka', country='BG', dateOfBirth=1984, dateOfDeath=0}]\n" +
                 "EBook\n" +
                 "onlineReadingLink: www.sfgwr.com\n" +
                 "downloadLink: null\n" +

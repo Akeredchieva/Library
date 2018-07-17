@@ -26,7 +26,6 @@ public class UserRepositoryImpl implements UserRepository{
         throw new IllegalArgumentException("The user can not be found in the DB");
     }
 
-    //TODO: opravi si metoda - ne e korektno da priema User.
     @Override
     public void createUser(User user) {
 

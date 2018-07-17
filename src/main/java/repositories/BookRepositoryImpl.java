@@ -130,14 +130,8 @@ public class BookRepositoryImpl implements BookRepository {
             }
     }
 
-    // TODO: vij kade go polzvash i napravi proverka za -1.
-    // TODO: izchisti si metoda - imash povtoreniq na koda.
     @Override
     public int createQueryForWaiting(PaperBook book, String username){
-        /*
-          TODO: proverqva dali ima quety za tazi kniga. Ako ima proverqva(po username) dali tozi user e podal veche zaqvka.
-          TODO: Ako e podal vrashta index-a mu ot list-a, a ako ne e do odbavq i otnovo vrashta index-a
-        */
         if (this.queue.isEmpty()){
             // ako spisaka e prazen syzdavam go
             for (int k = 0; k< this.users.size(); k++) {
@@ -189,7 +183,6 @@ public class BookRepositoryImpl implements BookRepository {
     }
 
 
-// TODO: Proveri dali raboti korektno
     @Override
     public long bookAvailability(PaperBook book) {
         LocalDate theDateForTaking = LocalDate.now();
@@ -216,9 +209,7 @@ public class BookRepositoryImpl implements BookRepository {
         for (int i=0; i< booksInLibrary.size() ; i++){
             if (booksInLibrary.get(i) instanceof EBook){
                 if (eBook.getTitle().equals(booksInLibrary.get(i).getTitle())){
-                    if (eBook.getAuthors().containsAll(booksInLibrary.get(i).getAuthors())){
                         return ((EBook) booksInLibrary.get(i)).getOnlineReadingLink();
-                    }
                 }
             }
         }
@@ -229,13 +220,16 @@ public class BookRepositoryImpl implements BookRepository {
     public void setBookforBorrow(PaperBook book, String username) {
         for (int i = 0; i< this.history.size(); i++){
             if (this.history.get(i).getUser().getCredentials().getUsername().equals(username)){
-                    if (this.history.get(i).getBorrowedBooks().contains(book)) {
+                for (int j=0; j<this.history.get(i).getBorrowedBooks().size();j++) {
+                    if (this.history.get(i).getBorrowedBooks().get(j).getBook().equals(book)) {
                         throw new IllegalArgumentException("You can not borrow book that you already borrowed.");
                     } else {
-                        BorrowedBook borrowedBook = new BorrowedBook(book,LocalDate.now());
-                        this.history.get(i).getBorrowedBooks().add(borrowedBook);
+                        BorrowedBook borrowedBook = new BorrowedBook(book, LocalDate.now());
+                        List<BorrowedBook> borrowedBooks = history.get(i).getBorrowedBooks();
+                        borrowedBooks.add(borrowedBook);
+                        history.get(i).setBorrowedBooks(borrowedBooks);
                     }
-
+                }
             }
 
         }

@@ -22,7 +22,6 @@ public class AuthenticationService {
     }
 
 
-    //TODO: Razvii si logikata
 //    String LogIn(String username, String password){
 //        String token = "";
 //       if(userRepository.canUserLogIn(username, password)){

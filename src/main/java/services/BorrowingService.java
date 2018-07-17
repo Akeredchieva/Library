@@ -7,7 +7,6 @@ import repositories.HistoryRepository;
 import repositories.HistoryRepositoryImpl;
 
 
-//TODO: Promeni si imeto da e BookService - zashtoto vatre ti e i logikata za online kniga, koqto ne se borrow-va
 public class BorrowingService {
 
 
@@ -18,12 +17,17 @@ public class BorrowingService {
     // TODO: String msgForAttemptAnotherRequest();
    // TODO: int checkDelayDays();
 
-    public void changeBorrowedBook(Book book, int daysOfPostponement, User user){
+    public void makePostponement(Book book, int daysOfPostponement, User user){
         historyRepository.changeReturnDate(book, daysOfPostponement, user);
     }
 
-    public void borrowBook(PaperBook book, String username){
-        bookRepository.setBookforBorrow(book, username);
+    public void borrowBook(Book book, String username){
+        if (book instanceof PaperBook) {
+            PaperBook paperBook = (PaperBook) book;
+            bookRepository.setBookforBorrow(paperBook, username);
+        } else {
+            throw new IllegalArgumentException("This book is not paper.");
+        }
     }
 
    // TODO: Date calcTimeTillTheBookWillBeFree();

@@ -94,8 +94,6 @@ public class HistoryRepositoryImpl implements HistoryRepository {
         return null;
     }
 
-    // TODO: Napravi si koda chetim!!!!
-    // TODO: Za ostavashti dni vazmojni za zaqvka ako iskash printvai si i kolko dni.
     @Override
     public void changeReturnDate(Book bookInput, int daysOfPostponement, User user) {
         if (bookInput instanceof PaperBook) {
@@ -108,7 +106,9 @@ public class HistoryRepositoryImpl implements HistoryRepository {
                             if (days <= (28 - daysOfPostponement)) {
                                 LocalDate newReturnDate = this.history.get(i).getBorrowedBooks().get(j).getDateOfReturn().plusDays(daysOfPostponement);
                                 this.history.get(i).getBorrowedBooks().get(j).setDateOfReturn(newReturnDate);
-                            } else if ((this.history.get(i).getBorrowedBooks().get(j).getDateOfReturn().until(LocalDate.now()).getDays() >= 0) && (this.history.get(i).getBorrowedBooks().get(j).getDateOfReturn().until(LocalDate.now()).getMonths() >= 0) && (this.history.get(i).getBorrowedBooks().get(j).getDateOfReturn().until(LocalDate.now()).getDays() >= 0)) {
+                            } else if ((this.history.get(i).getBorrowedBooks().get(j).getDateOfReturn().until(LocalDate.now()).getDays() >= 0)
+                                    && (this.history.get(i).getBorrowedBooks().get(j).getDateOfReturn().until(LocalDate.now()).getMonths() >= 0)
+                                    && (this.history.get(i).getBorrowedBooks().get(j).getDateOfReturn().until(LocalDate.now()).getDays() >= 0)) {
                                 String message = "The return date is expired with "
                                         + this.history.get(i).getBorrowedBooks().get(j).getDateOfReturn().until(LocalDate.now()).getDays()
                                         + " days.And "

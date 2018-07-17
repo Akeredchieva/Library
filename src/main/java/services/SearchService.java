@@ -11,9 +11,6 @@ public class SearchService {
 
     private BookRepository bookRepository = new BookRepositoryImpl(DBClassExample.booksInLibrary, DBClassExample.queue, DBClassExample.users, DBClassExample.history);
 
-    //TODO: opravi si metodite za imenata da sa generic - da priemat edin string da go parsva
-    // TODO: chrez whitespace kato vzima parviq i posledniq substring
-
     List<Book> searchByTitle(String title){
         if(bookRepository.findBookByTitle(title).isEmpty()){
             throw new IllegalArgumentException("There is no book with this title.");

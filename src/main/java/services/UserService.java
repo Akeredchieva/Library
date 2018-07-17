@@ -28,12 +28,6 @@ public class UserService {
         throw new IllegalArgumentException("You can not see expiration date on electronic book.");
     }
 
-    // TODO: Vij zashto tarsish borrowed book i izprashtash borrowed book ? Ne moje li prosto da pratish dadenata kato input book?
-    public void makePostponement(User user, Book book, int daysOfPostponement){
-        borrowingService.changeBorrowedBook(book,daysOfPostponement, user);
-
-    }
-
     public String viewHistory(String username){
 
        return historyRepository.getAllHistory(username);
@@ -62,8 +56,6 @@ public class UserService {
             if(bookRepository.isBookAvailable((PaperBook) book)){
                 bookRepository.decAvailableCopies((PaperBook)book);
                 borrowingService.borrowBook((PaperBook) book,username);
-                //TODO: trqbva da namalish kopiqta na knigata s edno.Ako nqma kopiq trqbva da idesh w opashkata i da dobavish
-                // TODO: user-a w opshakata za tazi kniga i da mu varnesh nomer
                 sb.append("The book is borrowed.");
             } else {
                 numberInTheQueue = bookRepository.createQueryForWaiting((PaperBook) book, username);
