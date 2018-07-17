@@ -67,11 +67,14 @@ public class BookRepositoryImpl implements BookRepository {
     @Override
     public List<Book> findBookByGenres(String... genres) {
         List<Book> foundBooks = new ArrayList<>();
-        for (Book book: booksInLibrary) {
             for (String genre: genres) {
-                if (book.getGenre().equalsIgnoreCase(genre))
-                    foundBooks.add(book);
-            }
+                for (Book book: booksInLibrary) {
+                    if (book.getGenre().equalsIgnoreCase(genre)) {
+                        if (!foundBooks.contains(book)) {
+                            foundBooks.add(book);
+                        }
+                    }
+                }
         }
         return foundBooks;
     }
@@ -83,7 +86,9 @@ public class BookRepositoryImpl implements BookRepository {
             for (String tagBook : book.getTags()) {
                 for (String tagSearch : tags) {
                     if (tagBook.equalsIgnoreCase(tagSearch))
-                        foundBooks.add(book);
+                        if (!foundBooks.contains(book)) {
+                            foundBooks.add(book);
+                        }
                 }
 
             }
@@ -98,7 +103,7 @@ public class BookRepositoryImpl implements BookRepository {
             for (Author author: book.getAuthors()) {
                 String fullNameAuthor = author.getFirstName().toLowerCase() + " " + author.getLastName().toLowerCase();
                 String fullNameAuthorReverse = author.getLastName().toLowerCase() + " " + author.getFirstName().toLowerCase();
-                if(fullNameAuthor.contains(fullName) || fullNameAuthorReverse.contains(fullName)){
+                if(fullNameAuthor.contains(fullName.toLowerCase()) || fullNameAuthorReverse.contains(fullName.toLowerCase())){
                         foundBooks.add(book);
                 }
             }

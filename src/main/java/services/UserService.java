@@ -10,6 +10,8 @@ import java.util.List;
  * Service which create the functionality of the user. Here is the needed options which the user can make in it's profile.
  */
 public class UserService {
+
+    DBClassExample DBClassExample = new DBClassExample();
     private BookRepository bookRepository = new BookRepositoryImpl(DBClassExample.booksInLibrary,DBClassExample.queue,DBClassExample.users,DBClassExample.history);
     private HistoryRepository historyRepository = new HistoryRepositoryImpl(DBClassExample.history);
     private BorrowingService borrowingService = new BorrowingService();

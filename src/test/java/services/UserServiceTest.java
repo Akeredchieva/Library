@@ -28,12 +28,15 @@ public class UserServiceTest {
     User user;
     User user2;
     User user3;
+    DBClassExample DBClassExample;
+    PaperBook paperBook2;
     @Rule
     public ExpectedException expectedEx = ExpectedException.none();
 
     @Before
     public void setUp(){
-        db = new DBClassExample();
+
+        DBClassExample DBClassExample = new DBClassExample();
 
         tags = new ArrayList<>();
         tags.add("aaaa");
@@ -59,6 +62,15 @@ public class UserServiceTest {
         eBook = new EBook("AAAA", "comedy", "adsfsghjkhgfds", tags, "JGFBACSXDFGB", authorsSetEBook, "www.sfgwr.com");
 
         paperBook = new PaperBook("BBB", "horror", "poiuytrew", tags, "mnbvcx", authorsSetPaperBook, 23, 14);
+
+        authorsSetPaperBook = new HashSet<>();
+        author = new Author("Alexander", " Duma", "Englannd", 1994, 2003);
+        authorsSetPaperBook.add(author);
+        author2 = new Author("Gosho ot pochivka", "", "BG", 1984);
+        authorsSetPaperBook.add(author2);
+        author3 = new Author("Annie", "GFDS", "BG", 1994);
+        authorsSetPaperBook.add(author3);
+        paperBook2 = new PaperBook("CCC", "horror", "poiuytrew", tags, "mnbvcx", authorsSetPaperBook, 23, 14);
 
         Credentials credentials = new Credentials("apk94", "123456789");
         Address address = new Address("6-ti Septemvri", "Bulgaria", "Plovdiv");
@@ -95,6 +107,7 @@ public class UserServiceTest {
 
 
         DBClassExample.history.add(new History(user, historyOfBooks, borrowedBooks));
+        services.DBClassExample.booksInLibrary.add(paperBook2);
 
     }
 
@@ -121,7 +134,7 @@ public class UserServiceTest {
     public void checkExpirationDateForPaperBookWhichPresent(){
         UserService userService = new UserService();
         userService.checkExpirationDate(paperBook);
-        assertEquals(LocalDate.of(2018,5, 2),userService.checkExpirationDate(paperBook));
+        assertEquals(LocalDate.of(2018,7, 26),userService.checkExpirationDate(paperBook));
     }
 
     // Change the value of LocalDate on rows 94 and 95 with older date or add new Book with older date.
@@ -206,7 +219,7 @@ public class UserServiceTest {
                 "summary: adsfsghjkhgfds\n" +
                 "tags: [aaaa, bbb, ccc]\n" +
                 "isbn: JGFBACSXDFGB\n" +
-                "authors: [entities.Author@50134894, entities.Author@5e8c92f4, entities.Author@61e4705b]\n" +
+                "authors: [Author{firstName='Annie', lastName='GFDS', country='BG', dateOfBirth=1994, dateOfDeath=0}, Author{firstName='Gosho', lastName='ot pochivka', country='BG', dateOfBirth=1984, dateOfDeath=0}, Author{firstName='Alexander', lastName=' Duma', country='Englannd', dateOfBirth=1994, dateOfDeath=2003}]\n" +
                 "EBook\n" +
                 "onlineReadingLink: www.sfgwr.com\n" +
                 "downloadLink: null\n" +
@@ -247,12 +260,14 @@ public class UserServiceTest {
     @Test
     public void requestForBorrowingBookWhichHasCopies() {
         UserService userService = new UserService();
-        assertEquals("The book is borrowed.", userService.requestForBorrowingBook(paperBook,user.getCredentials().getUsername()));
+        assertEquals("The book is borrowed.", userService.requestForBorrowingBook(paperBook2,user.getCredentials().getUsername()));
 
     }
 
     @Test
-    public void requestForBorrowingBookWhichHasNotCopies() {
+    public void requestForBorrowingBookWhichHasNoCopies() {
+
+        DBClassExample DBClassExample = new DBClassExample();
         UserService userService = new UserService();
         Book book2 = new PaperBook("BBB", "horror", "poiuytrew", tags, "mnbvcx", authorsSetPaperBook, 23, 0);
         //userService.requestForBorrowingBook(paperBook,user.getCredentials().getUsername());
@@ -261,8 +276,8 @@ public class UserServiceTest {
         PersonInfo personInfo = new PersonInfo("rrrr", "yyyyy",18, Sex.MALE, address);
 
         user2 = new User(credentials, "grbfevd@abv.bg", true, personInfo);
-        String expected = "You number in the query is 4.\n" +
-                "And the book will be available after: 112days.";
+        String expected = "You number in the query is 13.\n" +
+                "And the book will be available after: 364days.";
         assertEquals(expected, userService.requestForBorrowingBook(paperBook,user2.getCredentials().getUsername()));
 
     }

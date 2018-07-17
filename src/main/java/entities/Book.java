@@ -25,13 +25,15 @@ public abstract class Book {
 
     @Override
     public String toString() {
+        List<Author> authors1 = new ArrayList<>();
+        authors1.addAll(authors);
         return "Book: " +
                 "title: " + title + '\n' +
                 "genre: " + genre + '\n' +
                 "summary: " + summary + '\n' +
                 "tags: " + tags + '\n' +
                 "isbn: " + isbn + '\n' +
-                "authors: " + authors + '\n' ;
+                "authors: " + authors1.toString() + '\n' ;
     }
 
     public String getTitle() {

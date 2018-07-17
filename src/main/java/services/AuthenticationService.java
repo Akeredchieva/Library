@@ -6,6 +6,8 @@ import repositories.UserRepositoryImpl;
 
 public class AuthenticationService {
 
+
+    DBClassExample DBClassExample = new DBClassExample();
     private UserRepository userRepository = new UserRepositoryImpl(DBClassExample.users);
 
     public void createAccount(User user) {
